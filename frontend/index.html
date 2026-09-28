@@ -283,113 +283,156 @@
 
 
 <script>
-document.getElementById("meetingForm").addEventListener("submit", async function(event) {
 
-    event.preventDefault();
+document.getElementById("meetingForm").addEventListener(
+    "submit",
+    async function(event) {
 
-
-    const name =
-        document.getElementById("name").value.trim();
-
-    const company =
-        document.getElementById("company").value.trim();
-
-    const role =
-        document.getElementById("role").value.trim();
-
-    const meetingDate =
-        document.getElementById("meetingDate").value;
-
-    const meetingTime =
-        document.getElementById("meetingTime").value;
-
-    const purpose =
-        document.getElementById("purpose").value.trim();
-
-    const goal =
-        document.getElementById("goal").value.trim();
+        event.preventDefault();
 
 
-    try {
+        /*
+            Get the logged-in user's email
+            from localStorage.
+        */
 
-        const response =
-            await fetch(
-                "/api/prepare",
-                {
-                    method: "POST",
+        const userEmail =
+            localStorage.getItem("userEmail");
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
 
-                    body: JSON.stringify({
+        /*
+            If the user is not logged in,
+            send them back to login.
+        */
 
-                        person_name:
-                            name,
+        if (!userEmail) {
 
-                        company:
-                            company,
-
-                        role:
-                            role,
-
-                        meeting_date:
-                            meetingDate,
-
-                        meeting_time:
-                            meetingTime,
-
-                        meeting_goal:
-                            goal,
-
-                        purpose:
-                            purpose
-                    })
-                }
+            alert(
+                "Please login before preparing a meeting."
             );
 
+            window.location.replace(
+                "login.html"
+            );
 
-        const data =
-            await response.json();
+            return;
+        }
 
 
-        if (!response.ok) {
+        const name =
+            document.getElementById("name").value.trim();
 
-            throw new Error(
-                data.error ||
-                "Could not generate meeting brief"
+        const company =
+            document.getElementById("company").value.trim();
+
+        const role =
+            document.getElementById("role").value.trim();
+
+        const meetingDate =
+            document.getElementById("meetingDate").value;
+
+        const meetingTime =
+            document.getElementById("meetingTime").value;
+
+        const purpose =
+            document.getElementById("purpose").value.trim();
+
+        const goal =
+            document.getElementById("goal").value.trim();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/prepare",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            /*
+                                NEW:
+                                Tell backend which
+                                user created this meeting.
+                            */
+
+                            user_email:
+                                userEmail,
+
+                            person_name:
+                                name,
+
+                            company:
+                                company,
+
+                            role:
+                                role,
+
+                            meeting_date:
+                                meetingDate,
+
+                            meeting_time:
+                                meetingTime,
+
+                            meeting_goal:
+                                goal,
+
+                            purpose:
+                                purpose
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Could not generate meeting brief"
+                );
+
+            }
+
+
+            /*
+               Save the returned meeting ID
+               so brief.html knows which
+               meeting to display.
+            */
+
+            window.location.href =
+                "./brief.html?meeting_id="
+                + encodeURIComponent(
+                    data.meeting_id
+                );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Could not connect to backend: "
+                + error.message
             );
 
         }
 
-
-        /*
-           Save the returned meeting ID
-           so brief.html knows which
-           meeting to display.
-        */
-
-        window.location.href =
-            "./brief.html?meeting_id="
-            + encodeURIComponent(
-                data.meeting_id
-            );
-
     }
+);
 
-    catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Could not connect to backend: "
-            + error.message
-        );
-
-    }
-
-});
 </script>
+
 </body>
 </html>
