@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meeting Brief - Meeting Memory AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        nav {
+            height: 68px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: auto;
+            padding: 50px 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            margin: 0 0 30px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .details {
+            margin-top: 8px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .meeting-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 22px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .purpose {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            margin: 28px 0 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .goal {
+            background: #111827;
+            color: white;
+            padding: 22px;
+            border-radius: 14px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .memory {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .memory h3 {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .memory p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #374151;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 14px;
+            background: #111827;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            background: #1f2937;
+        }
+
+        @media (max-width: 650px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            main {
+                padding: 35px 18px;
+            }
+
+            .meeting-info,
+            .memory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        Meeting Memory AI
+    </div>
+
+    <a href="./index.html">
+        ← Edit meeting
+    </a>
+
+</nav>
+
+
+<main>
+
+    <h1>
+        Your meeting brief
+    </h1>
+
+    <p class="subtitle">
+        Here's your personalized meeting preparation.
+    </p>
+
+
+    <div class="card">
+
+        <div class="name" id="personName"></div>
+
+        <div class="details" id="personDetails"></div>
+
+
+        <div class="meeting-info">
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Meeting date
+                </div>
+
+                <div class="info-value" id="meetingDate"></div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Meeting time
+                </div>
+
+                <div class="info-value" id="meetingTime"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="purpose" id="purpose"></div>
+
+    </div>
+
+
+    <div class="section-title">
+        Your meeting goal
+    </div>
+
+    <div class="goal" id="goal"></div>
+
+
+    <div class="section-title">
+        What I remember
+    </div>
+
+
+    <div class="memory-grid">
+
+        <div class="memory">
+            <h3>Previous conversation</h3>
+            <p>
+                Previous discussions and relevant context
+                can be recalled for this contact.
+            </p>
+        </div>
+
+        <div class="memory">
+            <h3>Learned preference</h3>
+            <p>
+                Communication preferences can be remembered
+                for future meetings.
+            </p>
+        </div>
+
+        <div class="memory">
+            <h3>Previous lesson</h3>
+            <p>
+                Previous outcomes can help prepare better
+                questions for future meetings.
+            </p>
+        </div>
+
+        <div class="memory">
+            <h3>Pending commitment</h3>
+            <p>
+                Previous commitments can be brought into
+                the next meeting.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        Suggested talking points
+    </div>
+
+
+    <div class="card">
+
+        <ul>
+            <li>Check progress since the last discussion.</li>
+            <li>Discuss current blockers.</li>
+            <li>Confirm the next milestone.</li>
+            <li>Agree on clear next steps.</li>
+        </ul>
+
+    </div>
+
+
+    <a href="./outcome.html" class="button">
+        Meeting completed →
+    </a>
+
+</main>
+
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+
+const name =
+    params.get("name");
+
+const company =
+    params.get("company");
+
+const role =
+    params.get("role");
+
+const date =
+    params.get("date");
+
+const time =
+    params.get("time");
+
+const purpose =
+    params.get("purpose");
+
+const goal =
+    params.get("goal");
+
+
+/*
+   Display meeting information
+*/
+
+document.getElementById("personName").textContent =
+    name || "Unknown attendee";
+
+
+document.getElementById("personDetails").textContent =
+    (company || "Unknown company")
+    + " · " +
+    (role || "Unknown role");
+
+
+document.getElementById("meetingDate").textContent =
+    date || "Not selected";
+
+
+document.getElementById("meetingTime").textContent =
+    time || "Not selected";
+
+
+document.getElementById("purpose").textContent =
+    "Purpose: " +
+    (purpose || "No purpose provided.");
+
+
+document.getElementById("goal").textContent =
+    goal || "No goal provided.";
+
+
+/*
+   Save again for outcome page
+*/
+
+const meeting = {
+    name: name || "",
+    company: company || "",
+    role: role || "",
+    meetingDate: date || "",
+    meetingTime: time || "",
+    purpose: purpose || "",
+    goal: goal || ""
+};
+
+
+localStorage.setItem(
+    "currentMeeting",
+    JSON.stringify(meeting)
+);
+
+</script>
+
+</body>
+</html>
