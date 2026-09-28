@@ -284,10 +284,11 @@
 
 <script>
 
-document.getElementById("meetingForm").addEventListener("submit", function(event) {
+document.getElementById("meetingForm").addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
+    // Get values from the form
 
     const name =
         document.getElementById("name").value.trim();
@@ -311,28 +312,115 @@ document.getElementById("meetingForm").addEventListener("submit", function(event
         document.getElementById("goal").value.trim();
 
 
-    /*
-       Send all meeting information directly
-       to brief.html through URL parameters.
-    */
+    // Change button text while processing
 
-    const params = new URLSearchParams();
+    const button =
+        document.querySelector("button[type='submit']");
 
-    params.set("name", name);
-    params.set("company", company);
-    params.set("role", role);
-    params.set("date", meetingDate);
-    params.set("time", meetingTime);
-    params.set("purpose", purpose);
-    params.set("goal", goal);
+    button.textContent = "Preparing meeting...";
+
+    button.disabled = true;
 
 
-    window.location.href =
-        "./brief.html?" + params.toString();
+    try {
+
+        // Send data to Flask backend
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/prepare",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    person_name: name,
+
+                    company: company,
+
+                    role: role,
+
+                    meeting_goal: goal
+
+                })
+            }
+        );
+
+
+        // Convert Flask response to JSON
+
+        const data = await response.json();
+
+
+        // Check if Flask returned an error
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error || "Something went wrong"
+            );
+
+        }
+
+
+        // Save the meeting information
+        // so brief.html can display it
+
+        localStorage.setItem(
+            "meetingPreparation",
+            JSON.stringify({
+
+                name: name,
+
+                company: company,
+
+                role: role,
+
+                date: meetingDate,
+
+                time: meetingTime,
+
+                purpose: purpose,
+
+                goal: goal,
+
+                brief: data.brief,
+
+                memory_count: data.memory_count
+
+            })
+        );
+
+
+        // Open brief page
+
+        window.location.href = "./brief.html";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not connect to the backend.\n\n" +
+            error.message
+        );
+
+
+        // Enable button again
+
+        button.textContent =
+            "Generate meeting brief →";
+
+        button.disabled = false;
+
+    }
 
 });
 
 </script>
-
 </body>
 </html>
