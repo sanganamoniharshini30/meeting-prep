@@ -1,4 +1,6 @@
 import os
+import json
+from datetime import datetime
 
 from flask import (
     Flask,
@@ -6,6 +8,7 @@ from flask import (
     jsonify,
     send_from_directory
 )
+
 from flask_cors import CORS
 
 from agent import generate_meeting_brief
@@ -16,14 +19,28 @@ from hindsight_memory import (
     recall_person
 )
 
-import json
-import os
-from datetime import datetime
+
+# ============================================================
+# PROJECT / FRONTEND PATHS
+# ============================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+PROJECT_DIR = os.path.dirname(
+    BASE_DIR
+)
+
+FRONTEND_DIR = os.path.join(
+    PROJECT_DIR,
+    "frontend"
+)
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(BASE_DIR)
-FRONTEND_DIR = os.path.join(PROJECT_DIR, "frontend")
+# ============================================================
+# FLASK APP
+# ============================================================
 
 app = Flask(
     __name__,
@@ -37,8 +54,6 @@ CORS(app)
 # ============================================================
 # DASHBOARD DATA FILE
 # ============================================================
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DASHBOARD_FILE = os.path.join(
     BASE_DIR,
@@ -66,14 +81,19 @@ def load_dashboard_data():
             data = json.load(file)
 
             if "meetings" not in data:
+
                 data["meetings"] = []
 
             if "outcomes" not in data:
+
                 data["outcomes"] = []
 
             return data
 
-    except (json.JSONDecodeError, OSError):
+    except (
+        json.JSONDecodeError,
+        OSError
+    ):
 
         return {
             "meetings": [],
@@ -167,10 +187,12 @@ def calculate_dashboard_stats(data):
 
 
 # ============================================================
-# HEALTH CHECK
+# HOME / FRONTEND ROUTES
 # ============================================================
+
 @app.route("/")
 def home():
+
     return send_from_directory(
         FRONTEND_DIR,
         "login.html"
@@ -179,10 +201,17 @@ def home():
 
 @app.route("/<path:page>")
 def frontend_page(page):
+
     return send_from_directory(
         FRONTEND_DIR,
         page
     )
+
+
+# ============================================================
+# HEALTH CHECK
+# ============================================================
+
 @app.route(
     "/api/health",
     methods=["GET"]
@@ -218,6 +247,29 @@ def prepare():
 
             "error":
                 "Request body is required"
+
+        }), 400
+
+
+    # ========================================================
+    # USER EMAIL
+    # ========================================================
+
+    user_email = data.get(
+        "user_email",
+        ""
+    ).strip()
+
+
+    if not user_email:
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                "user_email is required"
 
         }), 400
 
@@ -305,50 +357,32 @@ def prepare():
         # ====================================================
 
         result = generate_meeting_brief(
-
+            user_email=user_email,
             person_name=person_name,
-
             company=company,
-
             role=role,
-
             meeting_goal=meeting_goal,
-
             meeting_date=meeting_date,
-
             meeting_time=meeting_time
-
         )
-
 
         # ====================================================
         # STORE CURRENT MEETING IN HINDSIGHT
         # ====================================================
 
         retain_meeting(
-
             meeting_id=meeting_id,
-
+            user_email=user_email,
             meeting_date=meeting_date,
-
             person_name=person_name,
-
             company=company,
-
             role=role,
-
             purpose=purpose,
-
             concerns="",
-
             preferences="",
-
             commitments="",
-
             outcome=""
-
         )
-
 
         # ====================================================
         # SAVE MEETING TO DASHBOARD DATA
@@ -361,6 +395,9 @@ def prepare():
 
             "meeting_id":
                 meeting_id,
+
+            "user_email":
+                user_email,
 
             "person_name":
                 person_name,
@@ -489,6 +526,29 @@ def save_meeting():
         }), 400
 
 
+    # ========================================================
+    # USER EMAIL
+    # ========================================================
+
+    user_email = data.get(
+        "user_email",
+        ""
+    ).strip()
+
+
+    if not user_email:
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                "user_email is required"
+
+        }), 400
+
+
     try:
 
         # ====================================================
@@ -579,6 +639,9 @@ def save_meeting():
 
             "meeting_id":
                 meeting_id,
+
+            "user_email":
+                user_email,
 
             "person_name":
                 data.get(
@@ -718,6 +781,29 @@ def save_outcome():
         }), 400
 
 
+    # ========================================================
+    # USER EMAIL
+    # ========================================================
+
+    user_email = data.get(
+        "user_email",
+        ""
+    ).strip()
+
+
+    if not user_email:
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                "user_email is required"
+
+        }), 400
+
+
     try:
 
         # ====================================================
@@ -786,6 +872,9 @@ def save_outcome():
 
             "meeting_id":
                 meeting_id,
+
+            "user_email":
+                user_email,
 
             "person_name":
                 person_name,
@@ -871,92 +960,75 @@ def save_outcome():
 # GET ONE MEETING
 # ============================================================
 
-@app.route(
-    "/api/meetings/<meeting_id>",
-    methods=["GET"]
-)
+@app.route("/api/meetings/<meeting_id>", methods=["GET"])
 def get_meeting(meeting_id):
 
     try:
 
+        user_email = request.args.get(
+            "user_email",
+            ""
+        ).strip()
+
+        if not user_email:
+            return jsonify({
+                "success": False,
+                "error": "user_email is required"
+            }), 400
+
         data = load_dashboard_data()
 
+        for meeting in data.get("meetings", []):
 
-        for meeting in data.get(
-            "meetings",
-            []
-        ):
+            if meeting.get("meeting_id") == meeting_id:
 
-            if (
-                meeting.get(
-                    "meeting_id"
+                meeting_user_email = (
+                    meeting.get(
+                        "user_email",
+                        ""
+                    ).strip().lower()
                 )
-                ==
-                meeting_id
-            ):
 
-                # ============================================
-                # GET ACTUAL HINDSIGHT MEMORIES
-                # ============================================
+                # Make sure this meeting belongs
+                # to the currently logged-in user.
+                if meeting_user_email != user_email.lower():
+
+                    return jsonify({
+                        "success": False,
+                        "error": "You do not have access to this meeting"
+                    }), 403
 
                 person_name = meeting.get(
                     "person_name",
                     ""
                 )
 
-
                 memories = []
-
 
                 if person_name:
 
                     memories = recall_person(
+                        user_email,
                         person_name
                     )
 
-
-                # ============================================
-                # RETURN MEETING + MEMORIES
-                # ============================================
-
                 return jsonify({
-
-                    "success":
-                        True,
-
-                    "meeting":
-                        meeting,
-
-                    "memories":
-                        memories
-
+                    "success": True,
+                    "meeting": meeting,
+                    "memories": memories
                 })
 
-
         return jsonify({
-
-            "success":
-                False,
-
-            "error":
-                "Meeting not found"
-
+            "success": False,
+            "error": "Meeting not found"
         }), 404
-
 
     except Exception as e:
 
         return jsonify({
-
-            "success":
-                False,
-
-            "error":
-                str(e)
-
+            "success": False,
+            "error": str(e)
         }), 500
-
-
 # ============================================================
 # DASHBOARD API
 # ============================================================
@@ -969,11 +1041,118 @@ def dashboard():
 
     try:
 
+        # ====================================================
+        # GET LOGGED-IN USER EMAIL
+        # ====================================================
+
+        user_email = request.args.get(
+            "user_email",
+            ""
+        ).strip()
+
+
+        if not user_email:
+
+            return jsonify({
+
+                "success":
+                    False,
+
+                "error":
+                    "user_email is required"
+
+            }), 400
+
+
+        # ====================================================
+        # LOAD ALL DASHBOARD DATA
+        # ====================================================
+
         data = load_dashboard_data()
 
 
+        # ====================================================
+        # FILTER MEETINGS FOR THIS USER
+        # ====================================================
+
+        user_meetings = [
+
+            meeting
+
+            for meeting in data.get(
+                "meetings",
+                []
+            )
+
+            if meeting.get(
+                "user_email",
+                ""
+            ).strip().lower()
+            ==
+            user_email.lower()
+
+        ]
+
+
+        # ====================================================
+        # FILTER OUTCOMES FOR THIS USER
+        # ====================================================
+
+        user_outcomes = [
+
+            outcome
+
+            for outcome in data.get(
+                "outcomes",
+                []
+            )
+
+            if outcome.get(
+                "user_email",
+                ""
+            ).strip().lower()
+            ==
+            user_email.lower()
+
+        ]
+        user_memories = []
+
+        for meeting in user_meetings:
+
+            person_name = meeting.get(
+                "person_name",
+                ""
+            ).strip()
+
+            if person_name:
+                memories = recall_person(
+                    user_email,
+                    person_name
+                )
+
+                user_memories.extend(memories)
+
+        # ====================================================
+        # USER-SPECIFIC DATA
+        # ====================================================
+
+        user_data = {
+
+            "meetings":
+                user_meetings,
+
+            "outcomes":
+                user_outcomes
+
+        }
+
+
+        # ====================================================
+        # CALCULATE USER-SPECIFIC STATISTICS
+        # ====================================================
+
         stats = calculate_dashboard_stats(
-            data
+            user_data
         )
 
 
@@ -981,10 +1160,10 @@ def dashboard():
 
 
         # ====================================================
-        # LATEST 10 MEETINGS
+        # LATEST 10 MEETINGS FOR THIS USER
         # ====================================================
 
-        for meeting in data["meetings"][:10]:
+        for meeting in user_meetings[:10]:
 
             recent_meetings.append({
 
@@ -1044,17 +1223,16 @@ def dashboard():
             })
 
 
+        # ====================================================
+        # RETURN USER DASHBOARD
+        # ====================================================
+
         return jsonify({
-
-            "success":
-                True,
-
-            "stats":
-                stats,
-
-            "recent_meetings":
-                recent_meetings
-
+            "success": True,
+            "user_email": user_email,
+            "stats": stats,
+            "recent_meetings": recent_meetings,
+            "memories": user_memories
         })
 
 
@@ -1076,7 +1254,13 @@ def dashboard():
 # ============================================================
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
 
     app.run(
         host="0.0.0.0",
