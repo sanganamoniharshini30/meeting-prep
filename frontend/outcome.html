@@ -2,15 +2,22 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sign Up — Meeting Memory AI</title>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Meeting Outcome - Meeting Memory AI</title>
+
 
     <style>
+
         * {
             box-sizing: border-box;
         }
+
 
         body {
             margin: 0;
@@ -19,228 +26,849 @@
             color: #111827;
         }
 
-        .page {
-            min-height: 100vh;
+
+        nav {
+            height: 68px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 24px;
+            justify-content: space-between;
+
+            padding: 0 48px;
         }
 
-        .card {
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 35px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-        }
 
         .logo {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 700;
-            margin-bottom: 35px;
-            color: #111827;
         }
+
+
+        nav a {
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        main {
+            max-width: 720px;
+            margin: auto;
+            padding: 50px 24px;
+        }
+
 
         h1 {
             margin: 0 0 8px;
-            font-size: 27px;
-            letter-spacing: -0.5px;
+            font-size: 30px;
         }
+
 
         .subtitle {
-            margin: 0 0 28px;
+            margin: 0 0 30px;
             color: #6b7280;
             font-size: 14px;
-            line-height: 1.5;
         }
 
-        .field {
-            margin-bottom: 18px;
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 30px;
         }
+
+
+        .meeting-person {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .person-name {
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+
+        .person-details {
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        .field {
+            margin-bottom: 22px;
+        }
+
 
         label {
             display: block;
-            margin-bottom: 7px;
+            margin-bottom: 8px;
             font-size: 13px;
             font-weight: 600;
         }
 
-        input {
+
+        textarea {
             width: 100%;
-            padding: 12px 13px;
+            min-height: 110px;
+            padding: 13px;
+
             border: 1px solid #d1d5db;
             border-radius: 8px;
+
+            font-family: Arial, sans-serif;
             font-size: 14px;
+
             outline: none;
-            background: white;
+            resize: vertical;
         }
 
-        input:focus {
+
+        textarea:focus {
             border-color: #111827;
         }
 
+
         button {
             width: 100%;
-            padding: 13px;
+            margin-top: 5px;
+
+            padding: 14px;
+
             border: none;
-            border-radius: 8px;
+            border-radius: 9px;
+
             background: #111827;
             color: white;
+
             font-size: 14px;
             font-weight: 600;
+
             cursor: pointer;
-            margin-top: 4px;
         }
+
 
         button:hover {
             background: #1f2937;
         }
 
-        .bottom-text {
-            text-align: center;
-            margin-top: 22px;
-            color: #6b7280;
-            font-size: 13px;
+
+        .message {
+            display: none;
+
+            margin-top: 20px;
+            padding: 14px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+            line-height: 1.5;
         }
 
-        .bottom-text a {
-            color: #111827;
-            font-weight: 600;
-            text-decoration: none;
+
+        .success {
+            display: block;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
         }
 
-        .bottom-text a:hover {
-            text-decoration: underline;
+
+        .error {
+            display: block;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
         }
 
-        @media (max-width: 500px) {
-            .card {
-                padding: 28px 22px;
+
+        @media (max-width: 650px) {
+
+            nav {
+                padding: 0 20px;
             }
+
+
+            main {
+                padding: 35px 18px;
+            }
+
+
+            .card {
+                padding: 22px;
+            }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <div class="page">
 
-        <div class="card">
+<nav>
 
-            <div class="logo">
-                Meeting Memory AI
+    <div class="logo">
+        Meeting Memory AI
+    </div>
+
+
+    <a href="./dashboard.html">
+        ← Dashboard
+    </a>
+
+</nav>
+
+
+
+<main>
+
+
+    <h1>
+        Complete your meeting
+    </h1>
+
+
+    <p class="subtitle">
+        Record what happened so your meeting memory stays useful.
+    </p>
+
+
+
+    <div class="card">
+
+
+        <!-- =========================================
+             MEETING INFORMATION
+        ========================================== -->
+
+
+        <div class="meeting-person">
+
+
+            <div
+                class="person-name"
+                id="personName"
+            >
+                Loading meeting...
             </div>
 
-            <h1>Create your account</h1>
 
-            <p class="subtitle">
-                Start building your personal meeting memory.
-            </p>
-
-            <form id="signupForm">
-
-                <div class="field">
-
-                    <label for="name">
-                        Full name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="name"
-                        placeholder="Your full name"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="email">
-                        Email
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        placeholder="you@example.com"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="password">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Create a password"
-                        required
-                    >
-
-                </div>
-
-
-                <button type="submit">
-                    Create account
-                </button>
-
-            </form>
-
-
-            <div class="bottom-text">
-
-                Already have an account?
-
-                <a href="login.html">
-                    Sign in
-                </a>
-
+            <div
+                class="person-details"
+                id="personDetails"
+            >
             </div>
+
 
         </div>
+
+
+
+        <!-- =========================================
+             OUTCOME FORM
+        ========================================== -->
+
+
+        <form id="outcomeForm">
+
+
+            <div class="field">
+
+
+                <label for="outcome">
+
+                    What was the outcome?
+
+                </label>
+
+
+                <textarea
+                    id="outcome"
+                    placeholder="Describe what was decided or achieved in the meeting."
+                    required
+                ></textarea>
+
+
+            </div>
+
+
+
+            <div class="field">
+
+
+                <label for="reason">
+
+                    Why was this outcome reached?
+
+                </label>
+
+
+                <textarea
+                    id="reason"
+                    placeholder="Explain the important reasons, decisions, or constraints."
+                ></textarea>
+
+
+            </div>
+
+
+
+            <div class="field">
+
+
+                <label for="newInformation">
+
+                    New information
+
+                </label>
+
+
+                <textarea
+                    id="newInformation"
+                    placeholder="What new information did you learn during the meeting?"
+                ></textarea>
+
+
+            </div>
+
+
+
+            <div class="field">
+
+
+                <label for="commitment">
+
+                    New commitment
+
+                </label>
+
+
+                <textarea
+                    id="commitment"
+                    placeholder="What commitment or follow-up action was agreed?"
+                ></textarea>
+
+
+            </div>
+
+
+
+            <button type="submit">
+
+                Save meeting outcome →
+
+            </button>
+
+
+        </form>
+
+
+
+        <!-- =========================================
+             MESSAGE
+        ========================================== -->
+
+
+        <div
+            id="message"
+            class="message"
+        >
+        </div>
+
 
     </div>
 
 
-    <script>
-
-        document.getElementById("signupForm").onsubmit = function(event) {
-
-            event.preventDefault();
-
-            const name =
-                document.getElementById("name").value.trim();
-
-            const email =
-                document.getElementById("email").value.trim();
+</main>
 
 
-            localStorage.setItem(
-                "userName",
-                name
+
+<script>
+
+
+/* ============================================================
+   CHECK LOGIN
+============================================================ */
+
+
+const userEmail =
+    localStorage.getItem(
+        "userEmail"
+    );
+
+
+if (!userEmail) {
+
+    alert(
+        "Please login before recording a meeting outcome."
+    );
+
+
+    window.location.replace(
+        "login.html"
+    );
+
+}
+
+
+
+/* ============================================================
+   GET MEETING ID FROM URL
+============================================================ */
+
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const meetingId =
+    params.get(
+        "meeting_id"
+    );
+
+
+
+/* ============================================================
+   MESSAGE FUNCTION
+============================================================ */
+
+
+function showMessage(
+    message,
+    type
+) {
+
+    const messageBox =
+        document.getElementById(
+            "message"
+        );
+
+
+    messageBox.textContent =
+        message;
+
+
+    messageBox.className =
+        "message " + type;
+
+}
+
+
+
+/* ============================================================
+   LOAD MEETING INFORMATION
+============================================================ */
+
+
+async function loadMeeting() {
+
+
+    if (!meetingId) {
+
+        showMessage(
+            "No meeting was selected.",
+            "error"
+        );
+
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            "No meeting selected";
+
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/meetings/"
+                + encodeURIComponent(
+                    meetingId
+                )
+                + "?user_email="
+                + encodeURIComponent(
+                    userEmail
+                )
             );
 
-            localStorage.setItem(
-                "userEmail",
-                email
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Could not load meeting"
+            );
+
+        }
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Could not load meeting"
+            );
+
+        }
+
+
+        const meeting =
+            data.meeting;
+
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            meeting.person_name ||
+            "Meeting";
+
+
+        document.getElementById(
+            "personDetails"
+        ).textContent =
+            (meeting.company || "") +
+            " · " +
+            (meeting.role || "");
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Error loading meeting:",
+            error
+        );
+
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            "Could not load meeting";
+
+
+        document.getElementById(
+            "personDetails"
+        ).textContent =
+            error.message ||
+            "Something went wrong";
+
+    }
+
+}
+
+
+
+/* ============================================================
+   SAVE OUTCOME
+============================================================ */
+
+
+document.getElementById(
+    "outcomeForm"
+).addEventListener(
+    "submit",
+    async function(event) {
+
+
+        event.preventDefault();
+
+
+        /* ----------------------------------------------------
+           CHECK LOGIN
+        ---------------------------------------------------- */
+
+
+        if (!userEmail) {
+
+            alert(
+                "Please login first."
             );
 
 
-            window.location.replace("dashboard.html");
+            window.location.replace(
+                "login.html"
+            );
 
-        };
 
-    </script>
+            return;
+
+        }
+
+
+
+        /* ----------------------------------------------------
+           CHECK MEETING ID
+        ---------------------------------------------------- */
+
+
+        if (!meetingId) {
+
+            showMessage(
+                "No meeting was selected.",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+
+        /* ----------------------------------------------------
+           GET FORM VALUES
+        ---------------------------------------------------- */
+
+
+        const outcome =
+            document.getElementById(
+                "outcome"
+            ).value.trim();
+
+
+        const reason =
+            document.getElementById(
+                "reason"
+            ).value.trim();
+
+
+        const newInformation =
+            document.getElementById(
+                "newInformation"
+            ).value.trim();
+
+
+        const commitment =
+            document.getElementById(
+                "commitment"
+            ).value.trim();
+
+
+
+        /* ----------------------------------------------------
+           OUTCOME IS REQUIRED
+        ---------------------------------------------------- */
+
+
+        if (!outcome) {
+
+            showMessage(
+                "Please enter the meeting outcome.",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+
+        /* ----------------------------------------------------
+           DISABLE BUTTON WHILE SAVING
+        ---------------------------------------------------- */
+
+
+        const button =
+            document.querySelector(
+                "#outcomeForm button"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Saving outcome...";
+
+
+
+        try {
+
+
+            /* ------------------------------------------------
+               SEND OUTCOME TO FLASK
+            ------------------------------------------------ */
+
+
+            const response =
+                await fetch(
+                    "/api/outcomes",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            user_email:
+                                userEmail,
+
+                            meeting_id:
+                                meetingId,
+
+                            person_name:
+                                document.getElementById(
+                                    "personName"
+                                ).textContent,
+
+                            outcome:
+                                outcome,
+
+                            reason:
+                                reason,
+
+                            new_information:
+                                newInformation,
+
+                            commitment:
+                                commitment
+
+                        })
+                    }
+                );
+
+
+
+            const data =
+                await response.json();
+
+
+
+            /* ------------------------------------------------
+               CHECK RESPONSE
+            ------------------------------------------------ */
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Could not save meeting outcome"
+                );
+
+            }
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Could not save meeting outcome"
+                );
+
+            }
+
+
+
+            /* ------------------------------------------------
+               SUCCESS
+            ------------------------------------------------ */
+
+
+            showMessage(
+                "Meeting outcome saved successfully.",
+                "success"
+            );
+
+
+            button.textContent =
+                "Saved ✓";
+
+
+
+            /* ------------------------------------------------
+               GO TO DASHBOARD
+               AFTER SHORT DELAY
+            ------------------------------------------------ */
+
+
+            setTimeout(
+                function() {
+
+                    window.location.replace(
+                        "dashboard.html"
+                    );
+
+                },
+                1200
+            );
+
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+                "Error saving outcome:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Could not save meeting outcome.",
+                "error"
+            );
+
+
+            button.disabled =
+                false;
+
+
+            button.textContent =
+                "Save meeting outcome →";
+
+        }
+
+
+    }
+);
+
+
+
+/* ============================================================
+   START
+============================================================ */
+
+
+if (userEmail) {
+
+    loadMeeting();
+
+}
+
+</script>
+
 
 </body>
 
