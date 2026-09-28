@@ -362,7 +362,12 @@
 
 <script>
 
-    const userName = localStorage.getItem("userName");
+    /* =================================
+       USER NAME
+    ================================= */
+
+    const userName =
+        localStorage.getItem("userName");
 
     if (userName) {
 
@@ -375,9 +380,9 @@
     }
 
 
-    /*
-       DASHBOARD → INDEX
-    */
+    /* =================================
+       PREPARE A NEW MEETING
+    ================================= */
 
     document
         .getElementById("prepareButton")
@@ -386,6 +391,130 @@
             window.location.href = "index.html";
 
         });
+
+
+    /* =================================
+       READ LAST MEETING
+    ================================= */
+
+    const savedOutcome =
+        localStorage.getItem("meetingOutcome");
+
+
+    if (savedOutcome) {
+
+        try {
+
+            const meeting =
+                JSON.parse(savedOutcome);
+
+
+            /*
+               FIND THE RECENT MEETINGS
+               CONTAINER
+            */
+
+            const meetingsContainer =
+                document.querySelector(".meetings");
+
+
+            /*
+               CREATE NEW MEETING
+            */
+
+            const meetingElement =
+                document.createElement("div");
+
+            meetingElement.className =
+                "meeting";
+
+
+            /*
+               PERSON + COMPANY + ROLE
+            */
+
+            const personSection =
+                document.createElement("div");
+
+            const person =
+                document.createElement("div");
+
+            person.className =
+                "person";
+
+            person.textContent =
+                meeting.name || "Meeting";
+
+
+            const meetingInfo =
+                document.createElement("div");
+
+            meetingInfo.className =
+                "meeting-info";
+
+            meetingInfo.textContent =
+                [
+                    meeting.company,
+                    meeting.role
+                ]
+                .filter(Boolean)
+                .join(" · ") ||
+                "Meeting";
+
+
+            personSection.appendChild(person);
+
+            personSection.appendChild(meetingInfo);
+
+
+            /*
+               DATE
+            */
+
+            const date =
+                document.createElement("div");
+
+            date.className =
+                "date";
+
+            date.textContent =
+                meeting.date ||
+                "Recently";
+
+
+            /*
+               ADD TO PAGE
+            */
+
+            meetingElement.appendChild(
+                personSection
+            );
+
+            meetingElement.appendChild(
+                date
+            );
+
+
+            /*
+               PUT NEW MEETING
+               AT THE TOP
+            */
+
+            meetingsContainer.prepend(
+                meetingElement
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Could not read meeting data:",
+                error
+            );
+
+        }
+
+    }
 
 </script>
 
