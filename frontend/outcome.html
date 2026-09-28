@@ -249,7 +249,7 @@
  <script>
 
     /* ================================
-       GET MEETING DATA
+       GET MEETING DETAILS
     ================================= */
 
     const savedMeeting =
@@ -267,7 +267,7 @@
 
 
     /* ================================
-       FALLBACK TO URL PARAMETERS
+       GET DATA
     ================================= */
 
     const params =
@@ -337,7 +337,7 @@
 
 
     /* ================================
-       SUBMIT OUTCOME
+       SUBMIT FORM
     ================================= */
 
     document.getElementById("outcomeForm").addEventListener(
@@ -347,7 +347,7 @@
             event.preventDefault();
 
 
-            /* GET USER INPUT */
+            /* GET FORM VALUES */
 
             const outcome =
                 document.getElementById("outcome")
@@ -370,16 +370,18 @@
                     .trim();
 
 
-            /* CHECK REQUIRED FIELD */
+            /* REQUIRED FIELD */
 
             if (!outcome) {
-                alert("Please enter what happened in the meeting.");
+                alert(
+                    "Please enter what happened in the meeting."
+                );
                 return;
             }
 
 
             /* ================================
-               CREATE OUTCOME DATA
+               DATA FOR FLASK BACKEND
             ================================= */
 
             const data = {
@@ -389,8 +391,6 @@
                 company: company,
 
                 role: role,
-
-                meeting_goal: goal,
 
                 outcome: outcome,
 
@@ -402,30 +402,28 @@
             };
 
 
-            console.log("Sending outcome to backend:");
-            console.log(data);
+            console.log("Sending to Flask:", data);
 
 
             /* ================================
-               SEND TO FLASK
+               SEND TO BACKEND
             ================================= */
 
             try {
 
-                const response =
-                    await fetch(
-                        "http://127.0.0.1:5000/api/outcomes",
-                        {
-                            method: "POST",
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/outcomes",
+                    {
+                        method: "POST",
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                            body: JSON.stringify(data)
-                        }
-                    );
+                        body: JSON.stringify(data)
+                    }
+                );
 
 
                 const result =
@@ -439,14 +437,14 @@
 
 
                 /* ================================
-                   CHECK BACKEND RESPONSE
+                   CHECK RESPONSE
                 ================================= */
 
                 if (!response.ok) {
 
                     alert(
                         result.error ||
-                        "Could not save meeting outcome."
+                        "Failed to save meeting outcome."
                     );
 
                     return;
@@ -454,7 +452,7 @@
 
 
                 /* ================================
-                   SAVE LOCALLY TOO
+                   SAVE FOR MEMORY.HTML
                 ================================= */
 
                 const completeMeetingData = {
@@ -483,26 +481,16 @@
                 };
 
 
-                try {
-
-                    localStorage.setItem(
-                        "meetingOutcome",
-                        JSON.stringify(
-                            completeMeetingData
-                        )
-                    );
-
-                } catch (error) {
-
-                    console.log(
-                        "Local storage not available"
-                    );
-
-                }
+                localStorage.setItem(
+                    "meetingOutcome",
+                    JSON.stringify(
+                        completeMeetingData
+                    )
+                );
 
 
                 /* ================================
-                   GO TO MEMORY PAGE
+                   OPEN MEMORY PAGE
                 ================================= */
 
                 const memoryParams =
@@ -572,21 +560,20 @@
 
 
             /* ================================
-               BACKEND CONNECTION ERROR
+               BACKEND NOT RUNNING
             ================================= */
 
             catch (error) {
 
                 console.error(
-                    "Backend error:",
+                    "Connection error:",
                     error
                 );
 
                 alert(
-                    "Could not connect to the Flask backend. " +
-                    "Make sure app.py is running on port 5000."
+                    "Cannot connect to Flask backend. " +
+                    "Please make sure app.py is running."
                 );
-
             }
 
         }
