@@ -204,6 +204,39 @@
                 grid-template-columns: 1fr;
             }
         }
+        .profile-container {
+    position: relative;
+}
+
+.profile-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 6px;
+    min-width: 120px;
+    z-index: 1000;
+}
+
+.profile-menu button {
+    width: 100%;
+    border: none;
+    background: white;
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 13px;
+    color: #111827;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.profile-menu button:hover {
+    background: #f3f4f6;
+}
     </style>
 </head>
 
@@ -221,9 +254,19 @@
             ● Memory ready
         </div>
 
-        <div class="avatar" id="userAvatar">
-            U
-        </div>
+        <div class="profile-container">
+
+    <div class="avatar" id="userAvatar">
+        U
+    </div>
+
+    <div class="profile-menu" id="profileMenu">
+        <button type="button" id="logoutButton">
+            Logout
+        </button>
+    </div>
+
+</div>
 
     </div>
 
@@ -272,24 +315,58 @@
     </div>
 
 
+
+
     <div class="stats">
 
-        <div class="stat-card">
-            <div class="stat-number">24</div>
-            <div class="stat-label">Memories</div>
+    <div class="stat-card">
+
+        <div
+            class="stat-number"
+            id="memoryCount"
+        >
+            0
         </div>
 
-        <div class="stat-card">
-            <div class="stat-number">8</div>
-            <div class="stat-label">Contacts</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-number">5</div>
-            <div class="stat-label">Pending Commitments</div>
+        <div class="stat-label">
+            Memories
         </div>
 
     </div>
+
+
+    <div class="stat-card">
+
+        <div
+            class="stat-number"
+            id="contactCount"
+        >
+            0
+        </div>
+
+        <div class="stat-label">
+            Contacts
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div
+            class="stat-number"
+            id="commitmentCount"
+        >
+            0
+        </div>
+
+        <div class="stat-label">
+            Pending Commitments
+        </div>
+
+    </div>
+
+</div>
 
 
     <div class="section-title">
@@ -297,65 +374,33 @@
     </div>
 
 
-    <div class="meetings">
+    <div
+    class="meetings"
+    id="recentMeetings"
+>
 
-        <div class="meeting">
+    <div class="meeting">
 
-            <div>
-                <div class="person">
-                    Rahul Kumar
-                </div>
+        <div>
 
-                <div class="meeting-info">
-                    ABC Technologies · Deployment Follow-up
-                </div>
+            <div class="person">
+                Loading...
             </div>
 
-            <div class="date">
-                Yesterday
-            </div>
-
-        </div>
-
-
-        <div class="meeting">
-
-            <div>
-                <div class="person">
-                    Ananya Sharma
-                </div>
-
-                <div class="meeting-info">
-                    XYZ Corp · Product Review
-                </div>
-            </div>
-
-            <div class="date">
-                Sep 24
+            <div class="meeting-info">
+                Loading recent meetings
             </div>
 
         </div>
 
-
-        <div class="meeting">
-
-            <div>
-                <div class="person">
-                    Vikram Singh
-                </div>
-
-                <div class="meeting-info">
-                    Tech Solutions · Pricing Discussion
-                </div>
-            </div>
-
-            <div class="date">
-                Sep 20
-            </div>
-
+        <div class="date">
+            ...
         </div>
 
     </div>
+
+</div>
+
 
 </main>
 
@@ -369,16 +414,90 @@
     const userName =
         localStorage.getItem("userName");
 
+
     if (userName) {
 
-        document.getElementById("welcomeText").textContent =
+        document.getElementById(
+            "welcomeText"
+        ).textContent =
             "Welcome back, " + userName;
 
-        document.getElementById("userAvatar").textContent =
-            userName.charAt(0).toUpperCase();
+
+        document.getElementById(
+            "userAvatar"
+        ).textContent =
+            userName
+                .charAt(0)
+                .toUpperCase();
 
     }
+   /* =================================
+   PROFILE MENU
+================================= */
 
+const userAvatar =
+    document.getElementById("userAvatar");
+
+const profileMenu =
+    document.getElementById("profileMenu");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
+
+userAvatar.addEventListener(
+    "click",
+    function () {
+
+        if (profileMenu.style.display === "block") {
+
+            profileMenu.style.display = "none";
+
+        } else {
+
+            profileMenu.style.display = "block";
+
+        }
+
+    }
+);
+
+
+/* =================================
+   LOGOUT
+================================= */
+
+logoutButton.addEventListener(
+    "click",
+    function () {
+
+        localStorage.removeItem("userName");
+
+        window.location.href =
+            "login.html";
+
+    }
+);
+
+
+/* =================================
+   CLOSE MENU WHEN CLICKING OUTSIDE
+================================= */
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            !event.target.closest(".profile-container")
+        ) {
+
+            profileMenu.style.display = "none";
+
+        }
+
+    }
+);
 
     /* =================================
        PREPARE A NEW MEETING
@@ -386,138 +505,388 @@
 
     document
         .getElementById("prepareButton")
-        .addEventListener("click", function () {
+        .addEventListener(
+            "click",
+            function () {
 
-            window.location.href = "index.html";
+                window.location.href =
+                    "index.html";
 
-        });
+            }
+        );
 
 
     /* =================================
-       READ LAST MEETING
+       FORMAT DATE
     ================================= */
 
-    const savedOutcome =
-        localStorage.getItem("meetingOutcome");
+    function formatMeetingDate(
+        dateString
+    ) {
+
+        if (!dateString) {
+
+            return "Recently";
+
+        }
 
 
-    if (savedOutcome) {
+        const date =
+            new Date(dateString);
+
+
+        if (isNaN(date.getTime())) {
+
+            return dateString;
+
+        }
+
+
+        const today =
+            new Date();
+
+
+        const yesterday =
+            new Date();
+
+
+        yesterday.setDate(
+            today.getDate() - 1
+        );
+
+
+        if (
+            date.toDateString() ===
+            today.toDateString()
+        ) {
+
+            return "Today";
+
+        }
+
+
+        if (
+            date.toDateString() ===
+            yesterday.toDateString()
+        ) {
+
+            return "Yesterday";
+
+        }
+
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                month: "short",
+                day: "numeric"
+            }
+        );
+
+    }
+
+
+    /* =================================
+       LOAD DASHBOARD
+    ================================= */
+
+    async function loadDashboard() {
 
         try {
 
-            const meeting =
-                JSON.parse(savedOutcome);
+            const response =
+                await fetch(
+                    "http://127.0.0.1:5000/api/dashboard"
+                );
 
 
-            /*
-               FIND THE RECENT MEETINGS
-               CONTAINER
-            */
+            if (!response.ok) {
+
+                throw new Error(
+                    "Dashboard request failed"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Could not load dashboard"
+                );
+
+            }
+
+
+            /* =============================
+               UPDATE STATISTICS
+            ============================= */
+
+            document.getElementById(
+                "memoryCount"
+            ).textContent =
+                data.stats.memories;
+
+
+            document.getElementById(
+                "contactCount"
+            ).textContent =
+                data.stats.contacts;
+
+
+            document.getElementById(
+                "commitmentCount"
+            ).textContent =
+                data.stats.pending_commitments;
+
+
+            /* =============================
+               UPDATE RECENT MEETINGS
+            ============================= */
 
             const meetingsContainer =
-                document.querySelector(".meetings");
+                document.getElementById(
+                    "recentMeetings"
+                );
 
 
-            /*
-               CREATE NEW MEETING
-            */
-
-            const meetingElement =
-                document.createElement("div");
-
-            meetingElement.className =
-                "meeting";
+            meetingsContainer.innerHTML = "";
 
 
-            /*
-               PERSON + COMPANY + ROLE
-            */
+            if (
+                !data.recent_meetings ||
+                data.recent_meetings.length === 0
+            ) {
 
-            const personSection =
-                document.createElement("div");
+                meetingsContainer.innerHTML = `
 
-            const person =
-                document.createElement("div");
+                    <div class="meeting">
 
-            person.className =
-                "person";
+                        <div>
 
-            person.textContent =
-                meeting.name || "Meeting";
+                            <div class="person">
+                                No meetings yet
+                            </div>
 
+                            <div class="meeting-info">
+                                Prepare your first meeting
+                            </div>
 
-            const meetingInfo =
-                document.createElement("div");
+                        </div>
 
-            meetingInfo.className =
-                "meeting-info";
+                        <div class="date">
+                            —
+                        </div>
 
-            meetingInfo.textContent =
-                [
-                    meeting.company,
-                    meeting.role
-                ]
-                .filter(Boolean)
-                .join(" · ") ||
-                "Meeting";
+                    </div>
 
+                `;
 
-            personSection.appendChild(person);
+                return;
 
-            personSection.appendChild(meetingInfo);
+            }
 
 
-            /*
-               DATE
-            */
-
-            const date =
-                document.createElement("div");
-
-            date.className =
-                "date";
-
-            date.textContent =
-                meeting.date ||
-                "Recently";
+            data.recent_meetings.forEach(
+                function (meeting) {
 
 
-            /*
-               ADD TO PAGE
-            */
+                    const meetingElement =
+                        document.createElement(
+                            "div"
+                        );
 
-            meetingElement.appendChild(
-                personSection
+
+                    meetingElement.className =
+                        "meeting";
+                    meetingElement.style.cursor = "pointer";
+
+meetingElement.addEventListener(
+    "click",
+    function () {
+
+        window.location.href =
+            "./brief.html?meeting_id=" +
+            encodeURIComponent(
+                meeting.meeting_id
             );
 
-            meetingElement.appendChild(
-                date
-            );
+    }
+);
+
+                    /* =========================
+                       PERSON
+                    ========================= */
+
+                    const leftSection =
+                        document.createElement(
+                            "div"
+                        );
 
 
-            /*
-               PUT NEW MEETING
-               AT THE TOP
-            */
+                    const person =
+                        document.createElement(
+                            "div"
+                        );
 
-            meetingsContainer.prepend(
-                meetingElement
+
+                    person.className =
+                        "person";
+
+
+                    person.textContent =
+                        meeting.person_name ||
+                        "Unknown person";
+
+
+                    /* =========================
+                       COMPANY + ROLE / PURPOSE
+                    ========================= */
+
+                    const info =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    info.className =
+                        "meeting-info";
+
+
+                    let information = "";
+
+
+                    if (meeting.company) {
+
+                        information =
+                            meeting.company;
+
+                    }
+
+
+                    if (meeting.role) {
+
+                        information +=
+                            information
+                                ? " · " +
+                                  meeting.role
+                                : meeting.role;
+
+                    }
+
+
+                    if (!information) {
+
+                        information =
+                            meeting.purpose ||
+                            "Meeting";
+
+                    }
+
+
+                    info.textContent =
+                        information;
+
+
+                    leftSection.appendChild(
+                        person
+                    );
+
+                    leftSection.appendChild(
+                        info
+                    );
+
+
+                    /* =========================
+                       DATE
+                    ========================= */
+
+                    const date =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    date.className =
+                        "date";
+
+
+                    date.textContent =
+                        formatMeetingDate(
+                            meeting.meeting_date
+                        );
+
+
+                    /* =========================
+                       ADD MEETING
+                    ========================= */
+
+                    meetingElement.appendChild(
+                        leftSection
+                    );
+
+
+                    meetingElement.appendChild(
+                        date
+                    );
+
+
+                    meetingsContainer.appendChild(
+                        meetingElement
+                    );
+
+                }
             );
 
 
         } catch (error) {
 
             console.error(
-                "Could not read meeting data:",
+                "Dashboard error:",
                 error
             );
+
+
+            document.getElementById(
+                "recentMeetings"
+            ).innerHTML = `<div class="meeting">
+
+                    <div>
+
+                        <div class="person">
+                            Unable to load meetings
+                        </div>
+
+                        <div class="meeting-info">
+                            Make sure Flask is running
+                        </div>
+
+                    </div>
+
+                    <div class="date">
+                        Error
+                    </div>
+
+                </div>
+
+            `;
 
         }
 
     }
 
-</script>
 
+    /* =================================
+       LOAD DASHBOARD WHEN PAGE OPENS
+    ================================= */
+
+    loadDashboard();
+
+</script>
 </body>
 </html>
-
