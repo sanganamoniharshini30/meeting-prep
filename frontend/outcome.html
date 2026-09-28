@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting Outcome</title>
+
+    <title>Sign Up — Meeting Memory AI</title>
 
     <style>
         * {
@@ -13,575 +15,233 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            background: #f8fafc;
             color: #111827;
-            background: #ffffff;
         }
 
-        nav {
-            height: 64px;
-            border-bottom: 1px solid #e5e7eb;
+        .page {
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 50px;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-        }
-
-        .nav-text {
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        .container {
-            max-width: 850px;
-            margin: 50px auto;
-            padding: 0 24px;
-        }
-
-        .back {
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 14px;
+            margin-bottom: 35px;
+            color: #111827;
         }
 
         h1 {
-            margin-top: 30px;
-            margin-bottom: 10px;
-            font-size: 36px;
+            margin: 0 0 8px;
+            font-size: 27px;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
+            margin: 0 0 28px;
             color: #6b7280;
-            margin-bottom: 30px;
-        }
-
-        .meeting-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 30px;
-        }
-
-        .person-name {
-            font-size: 21px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .person-details {
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-
-        .info {
-            display: flex;
-            gap: 40px;
-        }
-
-        .label {
-            display: block;
-            color: #9ca3af;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-
-        .value {
             font-size: 14px;
-            font-weight: 500;
+            line-height: 1.5;
         }
 
         .field {
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            font-size: 14px;
+            margin-bottom: 7px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
         }
 
-        textarea {
+        input {
             width: 100%;
-            min-height: 120px;
-            padding: 14px;
+            padding: 12px 13px;
             border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-family: Arial, sans-serif;
-            font-size: 15px;
-            resize: vertical;
+            border-radius: 8px;
+            font-size: 14px;
             outline: none;
+            background: white;
         }
 
-        textarea:focus {
+        input:focus {
             border-color: #111827;
         }
 
-        .required {
-            color: red;
-        }
-
         button {
-            border: 0;
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
             background: #111827;
             color: white;
-            padding: 14px 22px;
-            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 15px;
+            margin-top: 4px;
         }
 
         button:hover {
-            background: #000000;
+            background: #1f2937;
+        }
+
+        .bottom-text {
+            text-align: center;
+            margin-top: 22px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .bottom-text a {
+            color: #111827;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .bottom-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 22px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<nav>
-    <div class="logo">Meeting Memory AI</div>
-    <div class="nav-text">Meeting outcome</div>
-</nav>
+    <div class="page">
 
-<div class="container">
+        <div class="card">
 
-    <a href="#" id="backButton" class="back">
-        ← Back to meeting brief
-    </a>
-
-    <h1>How did the meeting go?</h1>
-
-    <p class="subtitle">
-        Record what happened so the AI can remember this meeting.
-    </p>
-
-    <div class="meeting-card">
-
-        <div class="person-name" id="personName">
-            Meeting
-        </div>
-
-        <div class="person-details" id="personDetails">
-            Company · Role
-        </div>
-
-        <div class="info">
-
-            <div>
-                <span class="label">Date</span>
-                <span class="value" id="meetingDate">—</span>
+            <div class="logo">
+                Meeting Memory AI
             </div>
 
-            <div>
-                <span class="label">Time</span>
-                <span class="value" id="meetingTime">—</span>
+            <h1>Create your account</h1>
+
+            <p class="subtitle">
+                Start building your personal meeting memory.
+            </p>
+
+            <form id="signupForm">
+
+                <div class="field">
+
+                    <label for="name">
+                        Full name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="you@example.com"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Create a password"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    Create account
+                </button>
+
+            </form>
+
+
+            <div class="bottom-text">
+
+                Already have an account?
+
+                <a href="login.html">
+                    Sign in
+                </a>
+
             </div>
 
         </div>
 
     </div>
 
-    <form id="outcomeForm">
 
-        <div class="field">
-            <label for="outcome">
-                What happened in the meeting?
-                <span class="required">*</span>
-            </label>
+    <script>
 
-            <textarea
-                id="outcome"
-                required
-                placeholder="Summarize what happened in the meeting..."
-            ></textarea>
-        </div>
-
-        <div class="field">
-            <label for="concern">
-                Any concerns or objections?
-            </label>
-
-            <textarea
-                id="concern"
-                placeholder="Mention concerns or objections..."
-            ></textarea>
-        </div>
-
-        <div class="field">
-            <label for="information">
-                What new information did you learn?
-            </label>
-
-            <textarea
-                id="information"
-                placeholder="Mention new information about the person or company..."
-            ></textarea>
-        </div>
-
-        <div class="field">
-            <label for="commitment">
-                What was the next commitment?
-            </label>
-
-            <textarea
-                id="commitment"
-                placeholder="What did you agree to do next?"
-            ></textarea>
-        </div>
-
-        <button type="submit">
-            Save meeting memory →
-        </button>
-
-    </form>
-
-</div>
-
-
-  
-
-
- <script>
-
-    /* ================================
-       GET MEETING DETAILS
-    ================================= */
-
-    const savedMeeting =
-        localStorage.getItem("currentMeeting");
-
-    let meetingData = null;
-
-    if (savedMeeting) {
-        try {
-            meetingData = JSON.parse(savedMeeting);
-        } catch (error) {
-            console.error("Could not read meeting data:", error);
-        }
-    }
-
-
-    /* ================================
-       GET DATA
-    ================================= */
-
-    const params =
-        new URLSearchParams(window.location.search);
-
-    const name =
-        meetingData?.name ||
-        params.get("name") ||
-        "Meeting";
-
-    const company =
-        meetingData?.company ||
-        params.get("company") ||
-        "";
-
-    const role =
-        meetingData?.role ||
-        params.get("role") ||
-        "";
-
-    const date =
-        meetingData?.date ||
-        params.get("date") ||
-        "";
-
-    const time =
-        meetingData?.time ||
-        params.get("time") ||
-        "";
-
-    const purpose =
-        meetingData?.purpose ||
-        params.get("purpose") ||
-        "";
-
-    const goal =
-        meetingData?.goal ||
-        params.get("goal") ||
-        "";
-
-
-    /* ================================
-       DISPLAY MEETING DETAILS
-    ================================= */
-
-    document.getElementById("personName").textContent =
-        name;
-
-    document.getElementById("personDetails").textContent =
-        [company, role]
-            .filter(Boolean)
-            .join(" · ") || "Meeting details";
-
-    document.getElementById("meetingDate").textContent =
-        date || "Not specified";
-
-    document.getElementById("meetingTime").textContent =
-        time || "Not specified";
-
-
-    /* ================================
-       BACK TO BRIEF
-    ================================= */
-
-    document.getElementById("backButton").href =
-        "brief.html";
-
-
-    /* ================================
-       SUBMIT FORM
-    ================================= */
-
-    document.getElementById("outcomeForm").addEventListener(
-        "submit",
-        async function(event) {
+        document.getElementById("signupForm").onsubmit = function(event) {
 
             event.preventDefault();
 
+            const name =
+                document.getElementById("name").value.trim();
 
-            /* GET FORM VALUES */
+            const email =
+                document.getElementById("email").value.trim();
 
-            const outcome =
-                document.getElementById("outcome")
-                    .value
-                    .trim();
 
-            const concern =
-                document.getElementById("concern")
-                    .value
-                    .trim();
+            localStorage.setItem(
+                "userName",
+                name
+            );
 
-            const information =
-                document.getElementById("information")
-                    .value
-                    .trim();
+            localStorage.setItem(
+                "userEmail",
+                email
+            );
 
-            const commitment =
-                document.getElementById("commitment")
-                    .value
-                    .trim();
 
+            window.location.replace("dashboard.html");
 
-            /* REQUIRED FIELD */
+        };
 
-            if (!outcome) {
-                alert(
-                    "Please enter what happened in the meeting."
-                );
-                return;
-            }
-
-
-            /* ================================
-               DATA FOR FLASK BACKEND
-            ================================= */
-
-            const data = {
-
-                person_name: name,
-
-                company: company,
-
-                role: role,
-
-                outcome: outcome,
-
-                concerns: concern,
-
-                new_information: information,
-
-                commitment: commitment
-            };
-
-
-            console.log("Sending to Flask:", data);
-
-
-            /* ================================
-               SEND TO BACKEND
-            ================================= */
-
-            try {
-
-                const response = await fetch(
-                    "http://127.0.0.1:5000/api/outcomes",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify(data)
-                    }
-                );
-
-
-                const result =
-                    await response.json();
-
-
-                console.log(
-                    "Backend response:",
-                    result
-                );
-
-
-                /* ================================
-                   CHECK RESPONSE
-                ================================= */
-
-                if (!response.ok) {
-
-                    alert(
-                        result.error ||
-                        "Failed to save meeting outcome."
-                    );
-
-                    return;
-                }
-
-
-                /* ================================
-                   SAVE FOR MEMORY.HTML
-                ================================= */
-
-                const completeMeetingData = {
-
-                    name: name,
-
-                    company: company,
-
-                    role: role,
-
-                    date: date,
-
-                    time: time,
-
-                    purpose: purpose,
-
-                    goal: goal,
-
-                    outcome: outcome,
-
-                    concern: concern,
-
-                    information: information,
-
-                    commitment: commitment
-                };
-
-
-                localStorage.setItem(
-                    "meetingOutcome",
-                    JSON.stringify(
-                        completeMeetingData
-                    )
-                );
-
-
-                /* ================================
-                   OPEN MEMORY PAGE
-                ================================= */
-
-                const memoryParams =
-                    new URLSearchParams();
-
-                memoryParams.set(
-                    "name",
-                    name
-                );
-
-                memoryParams.set(
-                    "company",
-                    company
-                );
-
-                memoryParams.set(
-                    "role",
-                    role
-                );
-
-                memoryParams.set(
-                    "date",
-                    date
-                );
-
-                memoryParams.set(
-                    "time",
-                    time
-                );
-
-                memoryParams.set(
-                    "purpose",
-                    purpose
-                );
-
-                memoryParams.set(
-                    "goal",
-                    goal
-                );
-
-                memoryParams.set(
-                    "outcome",
-                    outcome
-                );
-
-                memoryParams.set(
-                    "concern",
-                    concern
-                );
-
-                memoryParams.set(
-                    "information",
-                    information
-                );
-
-                memoryParams.set(
-                    "commitment",
-                    commitment
-                );
-
-
-                window.location.href =
-                    "memory.html?" +
-                    memoryParams.toString();
-
-            }
-
-
-            /* ================================
-               BACKEND NOT RUNNING
-            ================================= */
-
-            catch (error) {
-
-                console.error(
-                    "Connection error:",
-                    error
-                );
-
-                alert(
-                    "Cannot connect to Flask backend. " +
-                    "Please make sure app.py is running."
-                );
-            }
-
-        }
-    );
-
-</script>
-
-           
+    </script>
 
 </body>
+
 </html>
