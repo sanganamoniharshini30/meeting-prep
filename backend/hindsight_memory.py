@@ -95,6 +95,7 @@ def setup_memory_bank():
 def retain_meeting(
 
     meeting_id,
+    user_email,
     meeting_date,
     person_name,
     company,
@@ -106,38 +107,37 @@ def retain_meeting(
     outcome=""
 
 ):
-
     meeting_content = f"""
+    User Email:
+    {user_email}
 
-Meeting Date:
-{meeting_date}
+    Meeting Date:
+    {meeting_date}
 
-Person:
-{person_name}
+    Person:
+    {person_name}
 
-Company:
-{company}
+    Company:
+    {company}
 
-Role:
-{role}
+    Role:
+    {role}
 
-Meeting Purpose:
-{purpose}
+    Meeting Purpose:
+    {purpose}
 
-Concerns:
-{concerns}
+    Concerns:
+    {concerns}
 
-Preferences:
-{preferences}
+    Preferences:
+    {preferences}
 
-Commitments:
-{commitments}
+    Commitments:
+    {commitments}
 
-Outcome:
-{outcome}
-
-"""
-
+    Outcome:
+    {outcome}
+    """
 
     client = get_hindsight_client()
 
@@ -149,11 +149,7 @@ Outcome:
 
             content=meeting_content,
 
-            context=(
-                "Meeting history for the "
-                "Meeting Prep Agent"
-            ),
-
+            context=f"Meeting history for user {user_email}",
             document_id=meeting_id
 
         )
@@ -174,12 +170,18 @@ Outcome:
 # RECALL PERSON
 # ============================================================
 
-def recall_person(person_name):
+def recall_person(user_email, person_name):
 
     query = f"""
+Find previous meeting information for this user.
 
-What do we know about {person_name}
-from previous meetings?
+User Email:
+{user_email}
+
+Person:
+{person_name}
+
+Only return information belonging to this exact user.
 
 Find relevant information about:
 
@@ -194,45 +196,32 @@ Find relevant information about:
 - important new information
 - lessons learned
 
+Do not return information belonging to another user.
 """
-
 
     client = get_hindsight_client()
 
     try:
 
         result = client.recall(
-
             bank_id=BANK_ID,
-
             query=query
-
         )
 
-
         memories = []
-
 
         for memory in result.results:
 
             memories.append({
-
-                "type":
-                    memory.type,
-
-                "text":
-                    memory.text
-
+                "type": memory.type,
+                "text": memory.text
             })
-
 
         return memories
 
     finally:
 
         client.close()
-
-
 # ============================================================
 # PREPARE MEETING USING HINDSIGHT
 # ============================================================
