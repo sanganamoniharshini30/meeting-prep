@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Outcome</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #111827;
+            background: #ffffff;
+        }
+
+        nav {
+            height: 64px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-text {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .back {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        h1 {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .meeting-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 30px;
+        }
+
+        .person-name {
+            font-size: 21px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .person-details {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            display: flex;
+            gap: 40px;
+        }
+
+        .label {
+            display: block;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .field {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #111827;
+        }
+
+        .required {
+            color: red;
+        }
+
+        button {
+            border: 0;
+            background: #111827;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #000000;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">Meeting Memory AI</div>
+    <div class="nav-text">Meeting outcome</div>
+</nav>
+
+<div class="container">
+
+    <a href="#" id="backButton" class="back">
+        ← Back to meeting brief
+    </a>
+
+    <h1>How did the meeting go?</h1>
+
+    <p class="subtitle">
+        Record what happened so the AI can remember this meeting.
+    </p>
+
+    <div class="meeting-card">
+
+        <div class="person-name" id="personName">
+            Meeting
+        </div>
+
+        <div class="person-details" id="personDetails">
+            Company · Role
+        </div>
+
+        <div class="info">
+
+            <div>
+                <span class="label">Date</span>
+                <span class="value" id="meetingDate">—</span>
+            </div>
+
+            <div>
+                <span class="label">Time</span>
+                <span class="value" id="meetingTime">—</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <form id="outcomeForm">
+
+        <div class="field">
+            <label for="outcome">
+                What happened in the meeting?
+                <span class="required">*</span>
+            </label>
+
+            <textarea
+                id="outcome"
+                required
+                placeholder="Summarize what happened in the meeting..."
+            ></textarea>
+        </div>
+
+        <div class="field">
+            <label for="concern">
+                Any concerns or objections?
+            </label>
+
+            <textarea
+                id="concern"
+                placeholder="Mention concerns or objections..."
+            ></textarea>
+        </div>
+
+        <div class="field">
+            <label for="information">
+                What new information did you learn?
+            </label>
+
+            <textarea
+                id="information"
+                placeholder="Mention new information about the person or company..."
+            ></textarea>
+        </div>
+
+        <div class="field">
+            <label for="commitment">
+                What was the next commitment?
+            </label>
+
+            <textarea
+                id="commitment"
+                placeholder="What did you agree to do next?"
+            ></textarea>
+        </div>
+
+        <button type="submit">
+            Save meeting memory →
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+    /* GET MEETING DETAILS */
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const name = params.get("name") || "Meeting";
+    const company = params.get("company") || "";
+    const role = params.get("role") || "";
+    const date = params.get("date") || "";
+    const time = params.get("time") || "";
+    const purpose = params.get("purpose") || "";
+    const goal = params.get("goal") || "";
+
+
+    /* DISPLAY */
+
+    document.getElementById("personName").textContent =
+        name;
+
+    document.getElementById("personDetails").textContent =
+        [company, role]
+            .filter(Boolean)
+            .join(" · ") || "Meeting details";
+
+    document.getElementById("meetingDate").textContent =
+        date || "Not specified";
+
+    document.getElementById("meetingTime").textContent =
+        time || "Not specified";
+
+
+    /* BACK TO BRIEF */
+
+    const backParams = new URLSearchParams();
+
+    backParams.set("name", name);
+    backParams.set("company", company);
+    backParams.set("role", role);
+    backParams.set("date", date);
+    backParams.set("time", time);
+    backParams.set("purpose", purpose);
+    backParams.set("goal", goal);
+
+    document.getElementById("backButton").href =
+        "brief.html?" + backParams.toString();
+
+
+    /* SUBMIT */
+
+    document.getElementById("outcomeForm").addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+            const outcome =
+                document.getElementById("outcome").value.trim();
+
+            const concern =
+                document.getElementById("concern").value.trim();
+
+            const information =
+                document.getElementById("information").value.trim();
+
+            const commitment =
+                document.getElementById("commitment").value.trim();
+
+
+            /* SAVE TO LOCAL STORAGE */
+
+            const meetingData = {
+                name: name,
+                company: company,
+                role: role,
+                date: date,
+                time: time,
+                purpose: purpose,
+                goal: goal,
+                outcome: outcome,
+                concern: concern,
+                information: information,
+                commitment: commitment
+            };
+
+            try {
+                localStorage.setItem(
+                    "meetingOutcome",
+                    JSON.stringify(meetingData)
+                );
+            } catch (error) {
+                console.log("Local storage not available");
+            }
+
+
+            /* CREATE MEMORY URL */
+
+            const memoryParams =
+                new URLSearchParams();
+
+            memoryParams.set("name", name);
+            memoryParams.set("company", company);
+            memoryParams.set("role", role);
+            memoryParams.set("date", date);
+            memoryParams.set("time", time);
+            memoryParams.set("purpose", purpose);
+            memoryParams.set("goal", goal);
+            memoryParams.set("outcome", outcome);
+            memoryParams.set("concern", concern);
+            memoryParams.set("information", information);
+            memoryParams.set("commitment", commitment);
+
+
+            /* REDIRECT */
+
+            window.location.href =
+                "memory.html?" +
+                memoryParams.toString();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
