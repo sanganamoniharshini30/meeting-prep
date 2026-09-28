@@ -283,12 +283,10 @@
 
 
 <script>
-
 document.getElementById("meetingForm").addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
-    // Get values from the form
 
     const name =
         document.getElementById("name").value.trim();
@@ -312,115 +310,86 @@ document.getElementById("meetingForm").addEventListener("submit", async function
         document.getElementById("goal").value.trim();
 
 
-    // Change button text while processing
-
-    const button =
-        document.querySelector("button[type='submit']");
-
-    button.textContent = "Preparing meeting...";
-
-    button.disabled = true;
-
-
     try {
 
-        // Send data to Flask backend
+        const response =
+            await fetch(
+                "http://127.0.0.1:5000/api/prepare",
+                {
+                    method: "POST",
 
-        const response = await fetch(
-            "http://127.0.0.1:5000/api/prepare",
-            {
-                method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                    body: JSON.stringify({
 
-                body: JSON.stringify({
+                        person_name:
+                            name,
 
-                    person_name: name,
+                        company:
+                            company,
 
-                    company: company,
+                        role:
+                            role,
 
-                    role: role,
+                        meeting_date:
+                            meetingDate,
 
-                    meeting_goal: goal
+                        meeting_time:
+                            meetingTime,
 
-                })
-            }
-        );
+                        meeting_goal:
+                            goal,
+
+                        purpose:
+                            purpose
+                    })
+                }
+            );
 
 
-        // Convert Flask response to JSON
+        const data =
+            await response.json();
 
-        const data = await response.json();
-
-
-        // Check if Flask returned an error
 
         if (!response.ok) {
 
             throw new Error(
-                data.error || "Something went wrong"
+                data.error ||
+                "Could not generate meeting brief"
             );
 
         }
 
 
-        // Save the meeting information
-        // so brief.html can display it
+        /*
+           Save the returned meeting ID
+           so brief.html knows which
+           meeting to display.
+        */
 
-        localStorage.setItem(
-            "meetingPreparation",
-            JSON.stringify({
+        window.location.href =
+            "./brief.html?meeting_id="
+            + encodeURIComponent(
+                data.meeting_id
+            );
 
-                name: name,
+    }
 
-                company: company,
-
-                role: role,
-
-                date: meetingDate,
-
-                time: meetingTime,
-
-                purpose: purpose,
-
-                goal: goal,
-
-                brief: data.brief,
-
-                memory_count: data.memory_count
-
-            })
-        );
-
-
-        // Open brief page
-
-        window.location.href = "./brief.html";
-
-
-    } catch (error) {
+    catch (error) {
 
         console.error(error);
 
         alert(
-            "Could not connect to the backend.\n\n" +
-            error.message
+            "Could not connect to backend: "
+            + error.message
         );
-
-
-        // Enable button again
-
-        button.textContent =
-            "Generate meeting brief →";
-
-        button.disabled = false;
 
     }
 
 });
-
 </script>
 </body>
 </html>
