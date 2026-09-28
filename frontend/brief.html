@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Meeting Brief - Meeting Memory AI</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -180,11 +182,16 @@
             .memory-grid {
                 grid-template-columns: 1fr;
             }
+
         }
+
     </style>
+
 </head>
 
+
 <body>
+
 
 <nav>
 
@@ -199,6 +206,7 @@
 </nav>
 
 
+
 <main>
 
     <h1>
@@ -209,6 +217,11 @@
         Here's your personalized meeting preparation.
     </p>
 
+
+
+    <!-- =========================================
+         BASIC MEETING INFORMATION
+    ========================================== -->
 
     <div class="card">
 
@@ -225,7 +238,10 @@
                     Meeting date
                 </div>
 
-                <div class="info-value" id="meetingDate"></div>
+                <div
+                    class="info-value"
+                    id="meetingDate">
+                </div>
 
             </div>
 
@@ -236,305 +252,750 @@
                     Meeting time
                 </div>
 
-                <div class="info-value" id="meetingTime"></div>
+                <div
+                    class="info-value"
+                    id="meetingTime">
+                </div>
 
             </div>
 
         </div>
 
 
-        <div class="purpose" id="purpose"></div>
+        <div
+            class="purpose"
+            id="purpose">
+        </div>
 
     </div>
 
+
+
+    <!-- =========================================
+         MEETING GOAL
+    ========================================== -->
 
     <div class="section-title">
         Your meeting goal
     </div>
 
-    <div class="goal" id="goal"></div>
+    <div
+        class="goal"
+        id="goal">
+    </div>
 
+
+
+    <!-- =========================================
+         HINDSIGHT MEMORIES
+    ========================================== -->
 
     <div class="section-title">
         What I remember
     </div>
 
 
-    <div class="memory-grid">
+    <!--
+        IMPORTANT:
+        JavaScript will dynamically create
+        the memory cards here.
+    -->
 
-        <div class="memory">
-            <h3>Previous conversation</h3>
-            <p>
-                Previous discussions and relevant context
-                can be recalled for this contact.
-            </p>
-        </div>
-
-        <div class="memory">
-            <h3>Learned preference</h3>
-            <p>
-                Communication preferences can be remembered
-                for future meetings.
-            </p>
-        </div>
-
-        <div class="memory">
-            <h3>Previous lesson</h3>
-            <p>
-                Previous outcomes can help prepare better
-                questions for future meetings.
-            </p>
-        </div>
-
-        <div class="memory">
-            <h3>Pending commitment</h3>
-            <p>
-                Previous commitments can be brought into
-                the next meeting.
-            </p>
-        </div>
-
+    <div
+        class="memory-grid"
+        id="memoryGrid">
     </div>
 
+
+
+    <!-- =========================================
+         AI GENERATED MEETING PREPARATION
+    ========================================== -->
 
     <div class="section-title">
         Suggested talking points
     </div>
 
 
-    <div class="card">
+    <div
+        class="card"
+        id="aiBriefCard">
 
-        <ul>
-            <li>Check progress since the last discussion.</li>
-            <li>Discuss current blockers.</li>
-            <li>Confirm the next milestone.</li>
-            <li>Agree on clear next steps.</li>
-        </ul>
+        <div id="aiBrief">
+            Loading AI preparation...
+        </div>
 
     </div>
 
 
-    <a href="./outcome.html" class="button">
+
+    <!-- =========================================
+         COMPLETE MEETING
+    ========================================== -->
+
+    <a
+        href="./dashboard.html"
+        class="button">
+
         Meeting completed →
+
     </a>
+
 
 </main>
 
 
+
 <script>
 
-/*
-    READ DATA FROM INDEX.HTML
-*/
 
-const savedMeeting =
-    localStorage.getItem("meetingPreparation");
+/* ============================================================
+   GET MEETING ID FROM URL
+============================================================ */
 
-
-/*
-    Check whether meeting data exists
-*/
-
-if (!savedMeeting) {
-
-    alert("No meeting information found.");
-
-    window.location.href = "./index.html";
-
-}
-
-
-/*
-    Convert saved JSON into JavaScript object
-*/
-
-const meeting =
-    JSON.parse(savedMeeting);
-
-
-/*
-    Get meeting information
-*/
-
-const name =
-    meeting.name || "";
-
-const company =
-    meeting.company || "";
-
-const role =
-    meeting.role || "";
-
-const date =
-    meeting.date || "";
-
-const time =
-    meeting.time || "";
-
-const purpose =
-    meeting.purpose || "";
-
-const goal =
-    meeting.goal || "";
-
-const brief =
-    meeting.brief || "";
-
-const memoryCount =
-    meeting.memory_count || 0;
-
-
-/*
-    DISPLAY MEETING INFORMATION
-*/
-
-document.getElementById("personName").textContent =
-    name || "Unknown attendee";
-
-
-document.getElementById("personDetails").textContent =
-    (company || "Unknown company")
-    + " · " +
-    (role || "Unknown role");
-
-
-document.getElementById("meetingDate").textContent =
-    date || "Not selected";
-
-
-document.getElementById("meetingTime").textContent =
-    time || "Not selected";
-
-
-document.getElementById("purpose").textContent =
-    "Purpose: " +
-    (purpose || "No purpose provided.");
-
-
-document.getElementById("goal").textContent =
-    goal || "No goal provided.";
-
-
-/*
-    DISPLAY AI-GENERATED MEETING BRIEF
-*/
-
-const memoryCards =
-    document.querySelectorAll(".memory");
-
-
-if (memoryCards.length > 0) {
-
-    memoryCards[0].querySelector("p").textContent =
-        "Hindsight memories found: " +
-        memoryCount;
-
-}
-
-
-/*
-    Replace the static talking points
-    with the actual AI meeting brief
-*/
-
-const talkingPointsCard =
-    document.querySelector(
-        ".section-title:nth-of-type(3)"
+const params =
+    new URLSearchParams(
+        window.location.search
     );
 
 
-/*
-    Create AI brief section
-*/
-
-const sections =
-    document.querySelectorAll(".section-title");
+const meetingId =
+    params.get("meeting_id");
 
 
-if (sections.length >= 3) {
 
-    sections[2].textContent =
-        "AI Meeting Preparation";
+/* ============================================================
+   LOAD MEETING
+============================================================ */
+
+async function loadMeeting() {
+
+
+    /* --------------------------------------------------------
+       CHECK WHETHER MEETING ID EXISTS
+    -------------------------------------------------------- */
+
+    if (!meetingId) {
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            "No meeting selected";
+
+        return;
+
+    }
+
+
+
+    try {
+
+
+        /* ----------------------------------------------------
+           GET MEETING FROM FLASK
+        ---------------------------------------------------- */
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:5000/api/meetings/"
+                + encodeURIComponent(meetingId)
+            );
+
+
+
+        /* ----------------------------------------------------
+           CHECK RESPONSE
+        ---------------------------------------------------- */
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Meeting not found"
+            );
+
+        }
+
+
+
+        /* ----------------------------------------------------
+           CONVERT RESPONSE TO JSON
+        ---------------------------------------------------- */
+
+        const data =
+            await response.json();
+
+
+
+        /* ----------------------------------------------------
+           CHECK SUCCESS
+        ---------------------------------------------------- */
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Could not load meeting"
+            );
+
+        }
+
+
+
+        /* ----------------------------------------------------
+           GET MEETING OBJECT
+        ---------------------------------------------------- */
+
+        const meeting =
+            data.meeting;
+
+
+
+        /* ====================================================
+           BASIC MEETING INFORMATION
+        ==================================================== */
+
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            meeting.person_name || "";
+
+
+
+        document.getElementById(
+            "personDetails"
+        ).textContent =
+            (meeting.company || "") +
+            " · " +
+            (meeting.role || "");
+
+
+
+        /* ====================================================
+           MEETING DATE
+        ==================================================== */
+
+        document.getElementById(
+            "meetingDate"
+        ).textContent =
+            formatDate(
+                meeting.meeting_date
+            );
+
+
+
+        /* ====================================================
+           MEETING TIME
+
+           IMPORTANT:
+           Use meeting.meeting_time
+           instead of meeting.meeting_date.
+        ==================================================== */
+
+        document.getElementById(
+            "meetingTime"
+        ).textContent =
+            formatTime(
+                meeting.meeting_time
+            );
+
+
+
+        /* ====================================================
+           PURPOSE
+        ==================================================== */
+
+        document.getElementById(
+            "purpose"
+        ).textContent =
+            meeting.purpose || "";
+
+
+
+        /* ====================================================
+           MEETING GOAL
+
+           If meeting_goal exists, display it.
+           Otherwise use purpose as fallback.
+        ==================================================== */
+
+        document.getElementById(
+            "goal"
+        ).textContent =
+            meeting.meeting_goal ||
+            meeting.goal ||
+            meeting.purpose ||
+            "";
+
+
+
+        /* ====================================================
+           DISPLAY AI GENERATED BRIEF
+        ==================================================== */
+
+        displayAIBrief(
+            meeting.brief || ""
+        );
+
+
+
+        /* ====================================================
+           DISPLAY HINDSIGHT MEMORIES
+        ==================================================== */
+
+        displayMemories(
+            data.memories || []
+        );
+
+
+    }
+
+
+    catch (error) {
+
+
+        console.error(
+            "Error loading meeting:",
+            error
+        );
+
+
+        document.getElementById(
+            "personName"
+        ).textContent =
+            "Could not load meeting";
+
+
+        document.getElementById(
+            "personDetails"
+        ).textContent =
+            error.message ||
+            "Something went wrong";
+
+
+    }
 
 }
 
 
-/*
-    Find the card containing
-    the static talking points
-*/
 
-const cards =
-    document.querySelectorAll(".card");
+/* ============================================================
+   DISPLAY HINDSIGHT MEMORIES
+============================================================ */
+
+function displayMemories(memories) {
 
 
-if (cards.length >= 2) {
+    const memoryGrid =
+        document.getElementById(
+            "memoryGrid"
+        );
+
+
+    /* --------------------------------------------------------
+       CHECK MEMORY GRID
+    -------------------------------------------------------- */
+
+    if (!memoryGrid) {
+
+        return;
+
+    }
+
+
+
+    /* --------------------------------------------------------
+       CLEAR EXISTING MEMORY CARDS
+    -------------------------------------------------------- */
+
+    memoryGrid.innerHTML = "";
+
+
+
+    /* --------------------------------------------------------
+       NO MEMORIES
+    -------------------------------------------------------- */
+
+    if (
+        !memories ||
+        memories.length === 0
+    ) {
+
+
+        memoryGrid.innerHTML = `
+
+            <div class="memory">
+
+                <h3>
+                    No previous memories
+                </h3>
+
+                <p>
+                    No previous information was found
+                    for this contact.
+                </p>
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    /* --------------------------------------------------------
+       CREATE A CARD FOR EACH MEMORY
+    -------------------------------------------------------- */
+
+    memories.forEach(
+        function(memory) {
+
+
+            /* -----------------------------------------------
+               CREATE MEMORY CARD
+            ----------------------------------------------- */
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "memory";
+
+
+
+            /* -----------------------------------------------
+               MEMORY TYPE
+            ----------------------------------------------- */
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+
+            title.textContent =
+                memory.type ||
+                "Memory";
+
+
+
+            /* -----------------------------------------------
+               MEMORY TEXT
+            ----------------------------------------------- */
+
+            const text =
+                document.createElement(
+                    "p"
+                );
+
+
+            text.textContent =
+                memory.text ||
+                "";
+
+
+
+            /* -----------------------------------------------
+               ADD CONTENT TO CARD
+            ----------------------------------------------- */
+
+            card.appendChild(
+                title
+            );
+
+
+            card.appendChild(
+                text
+            );
+
+
+
+            /* -----------------------------------------------
+               ADD CARD TO GRID
+            ----------------------------------------------- */
+
+            memoryGrid.appendChild(
+                card
+            );
+
+
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   DISPLAY AI BRIEF
+============================================================ */
+
+function displayAIBrief(brief) {
+
+
+    const sectionTitles =
+        document.querySelectorAll(
+            ".section-title"
+        );
+
+
+    let targetSection =
+        null;
+
+
+
+    /* --------------------------------------------------------
+       FIND "Suggested talking points" SECTION
+    -------------------------------------------------------- */
+
+    sectionTitles.forEach(
+        function(section) {
+
+
+            if (
+                section.textContent.trim()
+                ===
+                "Suggested talking points"
+            ) {
+
+                targetSection =
+                    section;
+
+            }
+
+        }
+    );
+
+
+
+    /* --------------------------------------------------------
+       IF SECTION DOES NOT EXIST
+    -------------------------------------------------------- */
+
+    if (!targetSection) {
+
+        return;
+
+    }
+
+
+
+    /* --------------------------------------------------------
+       GET AI CARD
+    -------------------------------------------------------- */
 
     const aiCard =
-        cards[1];
+        targetSection.nextElementSibling;
+
+
+
+    if (!aiCard) {
+
+        return;
+
+    }
+
+
+
+    /* --------------------------------------------------------
+       CLEAR LOADING MESSAGE
+    -------------------------------------------------------- */
 
     aiCard.innerHTML = "";
 
-    const briefElement =
-        document.createElement("div");
 
-    briefElement.style.whiteSpace =
+
+    /* --------------------------------------------------------
+       CREATE AI TEXT
+    -------------------------------------------------------- */
+
+    const pre =
+        document.createElement(
+            "div"
+        );
+
+
+    pre.style.whiteSpace =
         "pre-wrap";
 
-    briefElement.style.fontSize =
-        "14px";
 
-    briefElement.style.lineHeight =
+    pre.style.lineHeight =
         "1.7";
 
-    briefElement.style.color =
-        "#374151";
 
-    briefElement.textContent =
+    pre.style.fontSize =
+        "14px";
+
+
+    pre.textContent =
         brief ||
-        "No AI meeting brief was generated.";
+        "No AI preparation available.";
+
+
+
+    /* --------------------------------------------------------
+       ADD AI BRIEF TO CARD
+    -------------------------------------------------------- */
 
     aiCard.appendChild(
-        briefElement
+        pre
     );
 
 }
 
 
-/*
-    SAVE MEETING FOR OUTCOME PAGE
-*/
 
-const currentMeeting = {
+/* ============================================================
+   FORMAT DATE
+============================================================ */
 
-    name: name,
-
-    company: company,
-
-    role: role,
-
-    meetingDate: date,
-
-    meetingTime: time,
-
-    purpose: purpose,
-
-    goal: goal,
-
-    brief: brief
-
-};
+function formatDate(value) {
 
 
-localStorage.setItem(
-    "currentMeeting",
-    JSON.stringify(currentMeeting)
-);
+    if (!value) {
+
+        return "Not available";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return value;
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   FORMAT TIME
+============================================================ */
+
+function formatTime(value) {
+
+
+    if (!value) {
+
+        return "Not available";
+
+    }
+
+
+    /*
+       HTML time input normally gives:
+
+       10:30
+
+       So first handle a simple HH:MM value.
+    */
+
+    if (
+        /^\d{2}:\d{2}$/.test(value)
+    ) {
+
+        const parts =
+            value.split(":");
+
+
+        let hours =
+            parseInt(
+                parts[0],
+                10
+            );
+
+
+        const minutes =
+            parts[1];
+
+
+        const ampm =
+            hours >= 12
+                ? "PM"
+                : "AM";
+
+
+        hours =
+            hours % 12 ||
+            12;
+
+
+        return (
+            hours +
+            ":" +
+            minutes +
+            " " +
+            ampm
+        );
+
+    }
+
+
+
+    /*
+       Otherwise try to parse
+       a complete date/time value.
+    */
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return value;
+
+    }
+
+
+    return date.toLocaleTimeString(
+        "en-US",
+        {
+            hour: "numeric",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   START
+============================================================ */
+
+loadMeeting();
 
 </script>
-
-
-
 
 
 </body>
