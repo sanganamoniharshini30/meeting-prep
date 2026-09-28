@@ -18,6 +18,7 @@ client = Groq(
 # ============================================================
 
 def generate_meeting_brief(
+    user_email,
     person_name,
     company="",
     role="",
@@ -35,6 +36,7 @@ def generate_meeting_brief(
     # ========================================================
 
     memories = recall_person(
+        user_email,
         person_name
     )
 
@@ -192,7 +194,7 @@ If there is no previous information, clearly say that there are no previous memo
 if __name__ == "__main__":
 
     result = generate_meeting_brief(
-
+        user_email="test@gmail.com",
         person_name="Rahul Kumar",
 
         company="ABC Technologies",
