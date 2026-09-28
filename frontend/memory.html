@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Updated</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #111827;
+        }
+
+        nav {
+            height: 64px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-text {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .success {
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #065f46;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .meeting-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .person-name {
+            font-size: 21px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .person-details {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            display: flex;
+            gap: 40px;
+        }
+
+        .label {
+            display: block;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .card-label {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .learned {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 30px;
+        }
+
+        .learned h2 {
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .learned p {
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            margin-top: 35px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .button {
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #111827;
+            color: white;
+        }
+
+        .secondary {
+            border: 1px solid #d1d5db;
+            color: #111827;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        Meeting Memory AI
+    </div>
+
+    <div class="nav-text">
+        Memory
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="success">
+        ✓ Meeting memory updated successfully
+    </div>
+
+
+    <h1>
+        Memory updated
+    </h1>
+
+    <p class="subtitle">
+        The meeting information has been saved for future meeting preparation.
+    </p>
+
+
+    <!-- MEETING -->
+
+    <div class="meeting-card">
+
+        <div
+            class="person-name"
+            id="personName"
+        >
+            Meeting
+        </div>
+
+        <div
+            class="person-details"
+            id="personDetails"
+        >
+            Meeting details
+        </div>
+
+        <div class="info">
+
+            <div>
+
+                <span class="label">
+                    Date
+                </span>
+
+                <span
+                    class="value"
+                    id="meetingDate"
+                >
+                    —
+                </span>
+
+            </div>
+
+            <div>
+
+                <span class="label">
+                    Time
+                </span>
+
+                <span
+                    class="value"
+                    id="meetingTime"
+                >
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OUTCOME -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            What happened
+        </h2>
+
+        <div class="card">
+
+            <div class="card-label">
+                Meeting outcome
+            </div>
+
+            <div
+                class="card-text"
+                id="outcomeText"
+            >
+                —
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MEMORIES -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            New memories learned
+        </h2>
+
+
+        <div class="card">
+
+            <div class="card-label">
+                Concern or objection
+            </div>
+
+            <div
+                class="card-text"
+                id="concernText"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-label">
+                New information
+            </div>
+
+            <div
+                class="card-text"
+                id="informationText"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-label">
+                Next commitment
+            </div>
+
+            <div
+                class="card-text"
+                id="commitmentText"
+            >
+                —
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI LEARNING -->
+
+    <div class="learned">
+
+        <h2>
+            What the AI learned
+        </h2>
+
+        <p id="learningText">
+            Meeting information is now available for future preparation.
+        </p>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <div class="buttons">
+
+        <a
+            href="dashboard.html"
+            class="button primary"
+        >
+            Back to dashboard
+        </a>
+
+        <a
+            href="index.html"
+            class="button secondary"
+        >
+            Prepare another meeting
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* READ URL DATA */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    let name =
+        params.get("name") || "";
+
+    let company =
+        params.get("company") || "";
+
+    let role =
+        params.get("role") || "";
+
+    let date =
+        params.get("date") || "";
+
+    let time =
+        params.get("time") || "";
+
+    let outcome =
+        params.get("outcome") || "";
+
+    let concern =
+        params.get("concern") || "";
+
+    let information =
+        params.get("information") || "";
+
+    let commitment =
+        params.get("commitment") || "";
+
+
+    /* FALLBACK TO LOCAL STORAGE */
+
+    if (!outcome) {
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    "meetingOutcome"
+                );
+
+            if (saved) {
+
+                const data =
+                    JSON.parse(saved);
+
+                name =
+                    data.name || "";
+
+                company =
+                    data.company || "";
+
+                role =
+                    data.role || "";
+
+                date =
+                    data.date || "";
+
+                time =
+                    data.time || "";
+
+                outcome =
+                    data.outcome || "";
+
+                concern =
+                    data.concern || "";
+
+                information =
+                    data.information || "";
+
+                commitment =
+                    data.commitment || "";
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Could not read saved data."
+            );
+
+        }
+
+    }
+
+
+    /* DISPLAY */
+
+    document.getElementById(
+        "personName"
+    ).textContent =
+        name || "Meeting";
+
+
+    document.getElementById(
+        "personDetails"
+    ).textContent =
+        [company, role]
+            .filter(Boolean)
+            .join(" · ") ||
+        "Meeting details";
+
+
+    document.getElementById(
+        "meetingDate"
+    ).textContent =
+        date || "Not specified";
+
+
+    document.getElementById(
+        "meetingTime"
+    ).textContent =
+        time || "Not specified";
+
+
+    document.getElementById(
+        "outcomeText"
+    ).textContent =
+        outcome || "No outcome recorded.";
+
+
+    document.getElementById(
+        "concernText"
+    ).textContent =
+        concern || "No concerns recorded.";
+
+
+    document.getElementById(
+        "informationText"
+    ).textContent =
+        information ||
+        "No new information recorded.";
+
+
+    document.getElementById(
+        "commitmentText"
+    ).textContent =
+        commitment ||
+        "No commitment recorded.";
+
+
+    /* AI LEARNING */
+
+    if (information) {
+
+        document.getElementById(
+            "learningText"
+        ).textContent =
+            "The AI learned: " +
+            information;
+
+    } else {
+
+        document.getElementById(
+            "learningText"
+        ).textContent =
+            "The AI recorded this meeting outcome and can use it as context for future meeting preparation.";
+
+    }
+
+</script>
+
+</body>
+</html>
