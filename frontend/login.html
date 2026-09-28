@@ -198,28 +198,36 @@
 
     <script>
 
-        document.getElementById("loginForm").onsubmit = function(event) {
+    document.getElementById("loginForm").onsubmit = function(event) {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            const email =
-                document.getElementById("email").value;
+        const email =
+            document.getElementById("email").value.trim();
 
-            localStorage.setItem(
-                "userEmail",
-                email
-            );
+        if (!email) {
+            alert("Please enter your email.");
+            return;
+        }
 
-            localStorage.setItem(
-                "userName",
-                email.split("@")[0]
-            );
+        // Store the logged-in user's email
+        localStorage.setItem(
+            "userEmail",
+            email
+        );
 
-            window.location.replace("dashboard.html");
+        // Store the user's display name
+        localStorage.setItem(
+            "userName",
+            email.split("@")[0]
+        );
 
-        };
+        // Open this user's dashboard
+        window.location.replace("dashboard.html");
 
-    </script>
+    };
+
+</script>
 
 </body>
 
