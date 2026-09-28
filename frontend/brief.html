@@ -323,33 +323,69 @@
 
 <script>
 
-const params = new URLSearchParams(window.location.search);
+/*
+    READ DATA FROM INDEX.HTML
+*/
 
-
-const name =
-    params.get("name");
-
-const company =
-    params.get("company");
-
-const role =
-    params.get("role");
-
-const date =
-    params.get("date");
-
-const time =
-    params.get("time");
-
-const purpose =
-    params.get("purpose");
-
-const goal =
-    params.get("goal");
+const savedMeeting =
+    localStorage.getItem("meetingPreparation");
 
 
 /*
-   Display meeting information
+    Check whether meeting data exists
+*/
+
+if (!savedMeeting) {
+
+    alert("No meeting information found.");
+
+    window.location.href = "./index.html";
+
+}
+
+
+/*
+    Convert saved JSON into JavaScript object
+*/
+
+const meeting =
+    JSON.parse(savedMeeting);
+
+
+/*
+    Get meeting information
+*/
+
+const name =
+    meeting.name || "";
+
+const company =
+    meeting.company || "";
+
+const role =
+    meeting.role || "";
+
+const date =
+    meeting.date || "";
+
+const time =
+    meeting.time || "";
+
+const purpose =
+    meeting.purpose || "";
+
+const goal =
+    meeting.goal || "";
+
+const brief =
+    meeting.brief || "";
+
+const memoryCount =
+    meeting.memory_count || 0;
+
+
+/*
+    DISPLAY MEETING INFORMATION
 */
 
 document.getElementById("personName").textContent =
@@ -380,26 +416,126 @@ document.getElementById("goal").textContent =
 
 
 /*
-   Save again for outcome page
+    DISPLAY AI-GENERATED MEETING BRIEF
 */
 
-const meeting = {
-    name: name || "",
-    company: company || "",
-    role: role || "",
-    meetingDate: date || "",
-    meetingTime: time || "",
-    purpose: purpose || "",
-    goal: goal || ""
+const memoryCards =
+    document.querySelectorAll(".memory");
+
+
+if (memoryCards.length > 0) {
+
+    memoryCards[0].querySelector("p").textContent =
+        "Hindsight memories found: " +
+        memoryCount;
+
+}
+
+
+/*
+    Replace the static talking points
+    with the actual AI meeting brief
+*/
+
+const talkingPointsCard =
+    document.querySelector(
+        ".section-title:nth-of-type(3)"
+    );
+
+
+/*
+    Create AI brief section
+*/
+
+const sections =
+    document.querySelectorAll(".section-title");
+
+
+if (sections.length >= 3) {
+
+    sections[2].textContent =
+        "AI Meeting Preparation";
+
+}
+
+
+/*
+    Find the card containing
+    the static talking points
+*/
+
+const cards =
+    document.querySelectorAll(".card");
+
+
+if (cards.length >= 2) {
+
+    const aiCard =
+        cards[1];
+
+    aiCard.innerHTML = "";
+
+    const briefElement =
+        document.createElement("div");
+
+    briefElement.style.whiteSpace =
+        "pre-wrap";
+
+    briefElement.style.fontSize =
+        "14px";
+
+    briefElement.style.lineHeight =
+        "1.7";
+
+    briefElement.style.color =
+        "#374151";
+
+    briefElement.textContent =
+        brief ||
+        "No AI meeting brief was generated.";
+
+    aiCard.appendChild(
+        briefElement
+    );
+
+}
+
+
+/*
+    SAVE MEETING FOR OUTCOME PAGE
+*/
+
+const currentMeeting = {
+
+    name: name,
+
+    company: company,
+
+    role: role,
+
+    meetingDate: date,
+
+    meetingTime: time,
+
+    purpose: purpose,
+
+    goal: goal,
+
+    brief: brief
+
 };
 
 
 localStorage.setItem(
     "currentMeeting",
-    JSON.stringify(meeting)
+    JSON.stringify(currentMeeting)
 );
 
 </script>
+
+
+
+
 
 </body>
 </html>
