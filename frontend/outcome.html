@@ -242,24 +242,76 @@
 
 </div>
 
-<script>
 
-    /* GET MEETING DETAILS */
-
-    const params = new URLSearchParams(
-        window.location.search
-    );
-
-    const name = params.get("name") || "Meeting";
-    const company = params.get("company") || "";
-    const role = params.get("role") || "";
-    const date = params.get("date") || "";
-    const time = params.get("time") || "";
-    const purpose = params.get("purpose") || "";
-    const goal = params.get("goal") || "";
+  
 
 
-    /* DISPLAY */
+ <script>
+
+    /* ================================
+       GET MEETING DATA
+    ================================= */
+
+    const savedMeeting =
+        localStorage.getItem("currentMeeting");
+
+    let meetingData = null;
+
+    if (savedMeeting) {
+        try {
+            meetingData = JSON.parse(savedMeeting);
+        } catch (error) {
+            console.error("Could not read meeting data:", error);
+        }
+    }
+
+
+    /* ================================
+       FALLBACK TO URL PARAMETERS
+    ================================= */
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const name =
+        meetingData?.name ||
+        params.get("name") ||
+        "Meeting";
+
+    const company =
+        meetingData?.company ||
+        params.get("company") ||
+        "";
+
+    const role =
+        meetingData?.role ||
+        params.get("role") ||
+        "";
+
+    const date =
+        meetingData?.date ||
+        params.get("date") ||
+        "";
+
+    const time =
+        meetingData?.time ||
+        params.get("time") ||
+        "";
+
+    const purpose =
+        meetingData?.purpose ||
+        params.get("purpose") ||
+        "";
+
+    const goal =
+        meetingData?.goal ||
+        params.get("goal") ||
+        "";
+
+
+    /* ================================
+       DISPLAY MEETING DETAILS
+    ================================= */
 
     document.getElementById("personName").textContent =
         name;
@@ -276,97 +328,273 @@
         time || "Not specified";
 
 
-    /* BACK TO BRIEF */
-
-    const backParams = new URLSearchParams();
-
-    backParams.set("name", name);
-    backParams.set("company", company);
-    backParams.set("role", role);
-    backParams.set("date", date);
-    backParams.set("time", time);
-    backParams.set("purpose", purpose);
-    backParams.set("goal", goal);
+    /* ================================
+       BACK TO BRIEF
+    ================================= */
 
     document.getElementById("backButton").href =
-        "brief.html?" + backParams.toString();
+        "brief.html";
 
 
-    /* SUBMIT */
+    /* ================================
+       SUBMIT OUTCOME
+    ================================= */
 
     document.getElementById("outcomeForm").addEventListener(
         "submit",
-        function(event) {
+        async function(event) {
 
             event.preventDefault();
 
+
+            /* GET USER INPUT */
+
             const outcome =
-                document.getElementById("outcome").value.trim();
+                document.getElementById("outcome")
+                    .value
+                    .trim();
 
             const concern =
-                document.getElementById("concern").value.trim();
+                document.getElementById("concern")
+                    .value
+                    .trim();
 
             const information =
-                document.getElementById("information").value.trim();
+                document.getElementById("information")
+                    .value
+                    .trim();
 
             const commitment =
-                document.getElementById("commitment").value.trim();
+                document.getElementById("commitment")
+                    .value
+                    .trim();
 
 
-            /* SAVE TO LOCAL STORAGE */
+            /* CHECK REQUIRED FIELD */
 
-            const meetingData = {
-                name: name,
-                company: company,
-                role: role,
-                date: date,
-                time: time,
-                purpose: purpose,
-                goal: goal,
-                outcome: outcome,
-                concern: concern,
-                information: information,
-                commitment: commitment
-            };
-
-            try {
-                localStorage.setItem(
-                    "meetingOutcome",
-                    JSON.stringify(meetingData)
-                );
-            } catch (error) {
-                console.log("Local storage not available");
+            if (!outcome) {
+                alert("Please enter what happened in the meeting.");
+                return;
             }
 
 
-            /* CREATE MEMORY URL */
+            /* ================================
+               CREATE OUTCOME DATA
+            ================================= */
 
-            const memoryParams =
-                new URLSearchParams();
+            const data = {
 
-            memoryParams.set("name", name);
-            memoryParams.set("company", company);
-            memoryParams.set("role", role);
-            memoryParams.set("date", date);
-            memoryParams.set("time", time);
-            memoryParams.set("purpose", purpose);
-            memoryParams.set("goal", goal);
-            memoryParams.set("outcome", outcome);
-            memoryParams.set("concern", concern);
-            memoryParams.set("information", information);
-            memoryParams.set("commitment", commitment);
+                person_name: name,
+
+                company: company,
+
+                role: role,
+
+                meeting_goal: goal,
+
+                outcome: outcome,
+
+                concerns: concern,
+
+                new_information: information,
+
+                commitment: commitment
+            };
 
 
-            /* REDIRECT */
+            console.log("Sending outcome to backend:");
+            console.log(data);
 
-            window.location.href =
-                "memory.html?" +
-                memoryParams.toString();
+
+            /* ================================
+               SEND TO FLASK
+            ================================= */
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:5000/api/outcomes",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify(data)
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Backend response:",
+                    result
+                );
+
+
+                /* ================================
+                   CHECK BACKEND RESPONSE
+                ================================= */
+
+                if (!response.ok) {
+
+                    alert(
+                        result.error ||
+                        "Could not save meeting outcome."
+                    );
+
+                    return;
+                }
+
+
+                /* ================================
+                   SAVE LOCALLY TOO
+                ================================= */
+
+                const completeMeetingData = {
+
+                    name: name,
+
+                    company: company,
+
+                    role: role,
+
+                    date: date,
+
+                    time: time,
+
+                    purpose: purpose,
+
+                    goal: goal,
+
+                    outcome: outcome,
+
+                    concern: concern,
+
+                    information: information,
+
+                    commitment: commitment
+                };
+
+
+                try {
+
+                    localStorage.setItem(
+                        "meetingOutcome",
+                        JSON.stringify(
+                            completeMeetingData
+                        )
+                    );
+
+                } catch (error) {
+
+                    console.log(
+                        "Local storage not available"
+                    );
+
+                }
+
+
+                /* ================================
+                   GO TO MEMORY PAGE
+                ================================= */
+
+                const memoryParams =
+                    new URLSearchParams();
+
+                memoryParams.set(
+                    "name",
+                    name
+                );
+
+                memoryParams.set(
+                    "company",
+                    company
+                );
+
+                memoryParams.set(
+                    "role",
+                    role
+                );
+
+                memoryParams.set(
+                    "date",
+                    date
+                );
+
+                memoryParams.set(
+                    "time",
+                    time
+                );
+
+                memoryParams.set(
+                    "purpose",
+                    purpose
+                );
+
+                memoryParams.set(
+                    "goal",
+                    goal
+                );
+
+                memoryParams.set(
+                    "outcome",
+                    outcome
+                );
+
+                memoryParams.set(
+                    "concern",
+                    concern
+                );
+
+                memoryParams.set(
+                    "information",
+                    information
+                );
+
+                memoryParams.set(
+                    "commitment",
+                    commitment
+                );
+
+
+                window.location.href =
+                    "memory.html?" +
+                    memoryParams.toString();
+
+            }
+
+
+            /* ================================
+               BACKEND CONNECTION ERROR
+            ================================= */
+
+            catch (error) {
+
+                console.error(
+                    "Backend error:",
+                    error
+                );
+
+                alert(
+                    "Could not connect to the Flask backend. " +
+                    "Make sure app.py is running on port 5000."
+                );
+
+            }
 
         }
     );
 
 </script>
+
+           
 
 </body>
 </html>
