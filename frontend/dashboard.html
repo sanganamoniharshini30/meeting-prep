@@ -1,1 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Meeting Memory AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        nav {
+            height: 68px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .memory-status {
+            font-size: 13px;
+            color: #16a34a;
+            background: #f0fdf4;
+            padding: 7px 12px;
+            border-radius: 20px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #111827;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 55px 24px;
+        }
+
+        .welcome {
+            margin-bottom: 32px;
+        }
+
+        .welcome h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+            letter-spacing: -0.8px;
+        }
+
+        .welcome p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .hero {
+            background: #111827;
+            color: white;
+            border-radius: 18px;
+            padding: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 28px;
+        }
+
+        .hero h2 {
+            margin: 0 0 10px;
+            font-size: 25px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .prepare-button {
+            border: none;
+            background: white;
+            color: #111827;
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .prepare-button:hover {
+            background: #f3f4f6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 36px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .stat-number {
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .meetings {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .meeting {
+            padding: 19px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .meeting:last-child {
+            border-bottom: none;
+        }
+
+        .person {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .meeting-info {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .date {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            main {
+                padding: 35px 18px;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        Meeting Memory AI
+    </div>
+
+    <div class="nav-right">
+
+        <div class="memory-status">
+            ● Memory ready
+        </div>
+
+        <div class="avatar" id="userAvatar">
+            U
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+    <div class="welcome">
+
+        <h1 id="welcomeText">
+            Welcome back
+        </h1>
+
+        <p>
+            Your meeting memory is ready to help you prepare.
+        </p>
+
+    </div>
+
+
+    <div class="hero">
+
+        <div>
+
+            <h2>
+                Ready for your next meeting?
+            </h2>
+
+            <p>
+                Prepare with context from your previous conversations.
+            </p>
+
+        </div>
+
+        <!-- DASHBOARD → INDEX CONNECTION -->
+
+        <button
+            type="button"
+            class="prepare-button"
+            id="prepareButton"
+        >
+            Prepare a meeting →
+        </button>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <div class="stat-number">24</div>
+            <div class="stat-label">Memories</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Contacts</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Pending Commitments</div>
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        Recent meetings
+    </div>
+
+
+    <div class="meetings">
+
+        <div class="meeting">
+
+            <div>
+                <div class="person">
+                    Rahul Kumar
+                </div>
+
+                <div class="meeting-info">
+                    ABC Technologies · Deployment Follow-up
+                </div>
+            </div>
+
+            <div class="date">
+                Yesterday
+            </div>
+
+        </div>
+
+
+        <div class="meeting">
+
+            <div>
+                <div class="person">
+                    Ananya Sharma
+                </div>
+
+                <div class="meeting-info">
+                    XYZ Corp · Product Review
+                </div>
+            </div>
+
+            <div class="date">
+                Sep 24
+            </div>
+
+        </div>
+
+
+        <div class="meeting">
+
+            <div>
+                <div class="person">
+                    Vikram Singh
+                </div>
+
+                <div class="meeting-info">
+                    Tech Solutions · Pricing Discussion
+                </div>
+            </div>
+
+            <div class="date">
+                Sep 20
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    const userName = localStorage.getItem("userName");
+
+    if (userName) {
+
+        document.getElementById("welcomeText").textContent =
+            "Welcome back, " + userName;
+
+        document.getElementById("userAvatar").textContent =
+            userName.charAt(0).toUpperCase();
+
+    }
+
+
+    /*
+       DASHBOARD → INDEX
+    */
+
+    document
+        .getElementById("prepareButton")
+        .addEventListener("click", function () {
+
+            window.location.href = "index.html";
+
+        });
+
+</script>
+
+</body>
+</html>
 
