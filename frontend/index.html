@@ -1,1 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Prepare Meeting - Meeting Memory AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        nav {
+            height: 68px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 720px;
+            margin: auto;
+            padding: 50px 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            margin: 0 0 30px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #111827;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .date-time {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 5px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #111827;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1f2937;
+        }
+
+        @media (max-width: 650px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            main {
+                padding: 35px 18px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .date-time {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        Meeting Memory AI
+    </div>
+
+    <a href="./dashboard.html">
+        ← Dashboard
+    </a>
+
+</nav>
+
+
+<main>
+
+    <h1>
+        Prepare for your meeting
+    </h1>
+
+    <p class="subtitle">
+        Add the meeting details to generate your personalized brief.
+    </p>
+
+
+    <div class="card">
+
+        <form id="meetingForm">
+
+            <div class="field">
+
+                <label for="name">
+                    Person name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="e.g. Rahul Sharma"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="company">
+                    Company
+                </label>
+
+                <input
+                    type="text"
+                    id="company"
+                    placeholder="e.g. Microsoft"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="role">
+                    Role
+                </label>
+
+                <input
+                    type="text"
+                    id="role"
+                    placeholder="e.g. Product Manager"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Meeting date & time
+                </label>
+
+                <div class="date-time">
+
+                    <input
+                        type="date"
+                        id="meetingDate"
+                        required
+                    >
+
+                    <input
+                        type="time"
+                        id="meetingTime"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="purpose">
+                    Meeting purpose
+                </label>
+
+                <textarea
+                    id="purpose"
+                    placeholder="What is this meeting about?"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="goal">
+                    Your goal
+                </label>
+
+                <textarea
+                    id="goal"
+                    placeholder="What do you want to achieve from this meeting?"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <button type="submit">
+                Generate meeting brief →
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<script>
+
+document.getElementById("meetingForm").addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const company =
+        document.getElementById("company").value.trim();
+
+    const role =
+        document.getElementById("role").value.trim();
+
+    const meetingDate =
+        document.getElementById("meetingDate").value;
+
+    const meetingTime =
+        document.getElementById("meetingTime").value;
+
+    const purpose =
+        document.getElementById("purpose").value.trim();
+
+    const goal =
+        document.getElementById("goal").value.trim();
+
+
+    /*
+       Send all meeting information directly
+       to brief.html through URL parameters.
+    */
+
+    const params = new URLSearchParams();
+
+    params.set("name", name);
+    params.set("company", company);
+    params.set("role", role);
+    params.set("date", meetingDate);
+    params.set("time", meetingTime);
+    params.set("purpose", purpose);
+    params.set("goal", goal);
+
+
+    window.location.href =
+        "./brief.html?" + params.toString();
+
+});
+
+</script>
+
+</body>
+</html>
