@@ -1,4 +1,11 @@
-from flask import Flask, request, jsonify
+import os
+
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    send_from_directory
+)
 from flask_cors import CORS
 
 from agent import generate_meeting_brief
@@ -14,7 +21,15 @@ import os
 from datetime import datetime
 
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.dirname(BASE_DIR)
+FRONTEND_DIR = os.path.join(PROJECT_DIR, "frontend")
+
+app = Flask(
+    __name__,
+    static_folder=FRONTEND_DIR,
+    static_url_path=""
+)
 
 CORS(app)
 
@@ -154,7 +169,20 @@ def calculate_dashboard_stats(data):
 # ============================================================
 # HEALTH CHECK
 # ============================================================
+@app.route("/")
+def home():
+    return send_from_directory(
+        FRONTEND_DIR,
+        "login.html"
+    )
 
+
+@app.route("/<path:page>")
+def frontend_page(page):
+    return send_from_directory(
+        FRONTEND_DIR,
+        page
+    )
 @app.route(
     "/api/health",
     methods=["GET"]
@@ -1048,13 +1076,10 @@ def dashboard():
 # ============================================================
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
 
     app.run(
-
         host="0.0.0.0",
-
-        port=5000,
-
-        debug=True
-
+        port=port,
+        debug=False
     )
