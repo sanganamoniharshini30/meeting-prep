@@ -4,12 +4,9 @@ from config import GROQ_API_KEY
 from hindsight_memory import recall_person
 
 
+# Create Groq client
 client = Groq(api_key=GROQ_API_KEY)
 
-
-# ==================================================
-# GENERATE MEETING BRIEF
-# ==================================================
 
 def generate_meeting_brief(
     person_name,
@@ -17,101 +14,89 @@ def generate_meeting_brief(
     role="",
     meeting_goal=""
 ):
+    """
+    Generate a personalized meeting brief using
+    Hindsight memories and Groq.
+    """
 
-    # ----------------------------------------------
-    # 1. Recall previous memories from Hindsight
-    # ----------------------------------------------
+    # --------------------------------------------------
+    # Get previous memories from Hindsight
+    # --------------------------------------------------
 
     memories = recall_person(person_name)
 
-    memory_text = "\n".join(
-        f"- {memory['text']}"
-        for memory in memories
-    )
+    # Convert memories into readable text
+    memory_text = ""
 
-    # ----------------------------------------------
-    # 2. Build meeting details
-    # ----------------------------------------------
+    if memories:
+        for memory in memories:
+            memory_text += (
+                f"\n[{memory['type']}]\n"
+                f"{memory['text']}\n"
+            )
+    else:
+        memory_text = "No previous memories found."
 
-    meeting_details = f"""
-Person: {person_name}
 
-Company: {company}
-
-Role: {role}
-
-Meeting Goal:
-{meeting_goal}
-"""
-
-    # ----------------------------------------------
-    # 3. Ask Groq to prepare the meeting
-    # ----------------------------------------------
+    # --------------------------------------------------
+    # Create prompt for Groq
+    # --------------------------------------------------
 
     prompt = f"""
 You are an AI Meeting Preparation Agent.
 
-Prepare the user for an upcoming meeting using:
+Prepare me for an upcoming meeting.
 
-1. Current meeting details
-2. Memories retrieved from Hindsight
+Person:
+{person_name}
 
-CURRENT MEETING:
+Company:
+{company}
 
-{meeting_details}
+Role:
+{role}
 
-HINDSIGHT MEMORIES:
+Meeting Goal:
+{meeting_goal}
+
+
+Previous information from Hindsight:
 
 {memory_text}
 
 
-Create a concise and practical meeting preparation brief.
+Using the information above, create a useful meeting preparation brief.
 
-Use these sections:
+Include:
 
-1. FACTS FROM MEMORY
-- Only state facts explicitly supported by memory.
+1. Relationship/history
+2. Important concerns
+3. Preferences
+4. Previous discussions
+5. Previous problems
+6. Previous commitments
+7. Previous outcomes
+8. Useful talking points
+9. Questions I should ask
+10. Things I should avoid
+11. Follow-up items
 
-2. LEARNED PREFERENCES
-- List preferences explicitly supported by memory.
-
-3. PENDING COMMITMENTS
-- List commitments found in memory.
-- Identify who made the commitment when known.
-
-4. PREVIOUS LESSONS
-- Explain what previous meeting outcomes teach us.
-
-5. TALKING POINTS
-- Suggest practical points for the upcoming meeting.
-- Clearly treat these as AI suggestions.
-
-6. QUESTIONS TO ASK
-- Suggest useful questions based on the meeting goal
-  and known concerns.
-
-7. WARNINGS
-- Give warnings only when supported by previous meetings
-  or known information.
-
-
-IMPORTANT RULES:
-
-- Never invent facts.
-- Never invent dates, budgets, numbers, roles or commitments.
-- If information is unavailable, say:
-  "Not available in memory."
-- Clearly distinguish stored facts from AI suggestions.
-- Keep the response concise and practical.
+Only use information supported by the memories.
+If there is no previous information, clearly say that there are no previous memories available.
 """
 
-    # ----------------------------------------------
-    # 4. Call Groq
-    # ----------------------------------------------
+
+    # --------------------------------------------------
+    # Ask Groq to generate the brief
+    # --------------------------------------------------
 
     response = client.chat.completions.create(
         model="openai/gpt-oss-120b",
         messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful AI meeting preparation assistant."
+            },
             {
                 "role": "user",
                 "content": prompt
@@ -120,11 +105,13 @@ IMPORTANT RULES:
         temperature=0.2
     )
 
+
     brief = response.choices[0].message.content
 
-    # ----------------------------------------------
-    # 5. Return JSON-friendly result
-    # ----------------------------------------------
+
+    # --------------------------------------------------
+    # Return result
+    # --------------------------------------------------
 
     return {
         "success": True,
@@ -134,29 +121,21 @@ IMPORTANT RULES:
     }
 
 
-# ==================================================
+# --------------------------------------------------
 # TEST
-# ==================================================
+# --------------------------------------------------
 
 if __name__ == "__main__":
-
-    print("\n======================================")
-    print("MEETING PREP AGENT")
-    print("======================================")
 
     result = generate_meeting_brief(
         person_name="Rahul Kumar",
         company="ABC Technologies",
         role="Product Manager",
-        meeting_goal="Discuss a lower-cost deployment option."
+        meeting_goal="Discuss the revised deployment architecture."
     )
 
     print("\n======================================")
-    print("MEETING PREPARATION BRIEF")
-    print("======================================\n")
-
-    print(result["brief"])
-
-    print("\n======================================")
-    print("DONE")
+    print("MEETING PREP BRIEF")
     print("======================================")
+
+    print(result)
