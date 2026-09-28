@@ -4,43 +4,70 @@ from config import GROQ_API_KEY
 from hindsight_memory import recall_person
 
 
-# Create Groq client
-client = Groq(api_key=GROQ_API_KEY)
+# ============================================================
+# CREATE GROQ CLIENT
+# ============================================================
 
+client = Groq(
+    api_key=GROQ_API_KEY
+)
+
+
+# ============================================================
+# GENERATE MEETING BRIEF
+# ============================================================
 
 def generate_meeting_brief(
     person_name,
     company="",
     role="",
-    meeting_goal=""
+    meeting_goal="",
+    meeting_date="",
+    meeting_time=""
 ):
     """
     Generate a personalized meeting brief using
     Hindsight memories and Groq.
     """
 
-    # --------------------------------------------------
-    # Get previous memories from Hindsight
-    # --------------------------------------------------
+    # ========================================================
+    # GET PREVIOUS MEMORIES FROM HINDSIGHT
+    # ========================================================
 
-    memories = recall_person(person_name)
+    memories = recall_person(
+        person_name
+    )
 
-    # Convert memories into readable text
+
+    # ========================================================
+    # CONVERT MEMORIES INTO READABLE TEXT
+    # ========================================================
+
     memory_text = ""
 
+
     if memories:
+
         for memory in memories:
+
             memory_text += (
+
                 f"\n[{memory['type']}]\n"
+
                 f"{memory['text']}\n"
+
             )
+
     else:
-        memory_text = "No previous memories found."
+
+        memory_text = (
+            "No previous memories found."
+        )
 
 
-    # --------------------------------------------------
-    # Create prompt for Groq
-    # --------------------------------------------------
+    # ========================================================
+    # CREATE PROMPT FOR GROQ
+    # ========================================================
 
     prompt = f"""
 You are an AI Meeting Preparation Agent.
@@ -55,6 +82,12 @@ Company:
 
 Role:
 {role}
+
+Meeting Date:
+{meeting_date}
+
+Meeting Time:
+{meeting_time}
 
 Meeting Goal:
 {meeting_goal}
@@ -82,60 +115,108 @@ Include:
 11. Follow-up items
 
 Only use information supported by the memories.
+
 If there is no previous information, clearly say that there are no previous memories available.
 """
 
 
-    # --------------------------------------------------
-    # Ask Groq to generate the brief
-    # --------------------------------------------------
+    # ========================================================
+    # ASK GROQ TO GENERATE THE BRIEF
+    # ========================================================
 
     response = client.chat.completions.create(
+
         model="openai/gpt-oss-120b",
+
         messages=[
+
             {
                 "role": "system",
-                "content": "You are a helpful AI meeting preparation assistant."
+
+                "content":
+                    "You are a helpful AI meeting preparation assistant."
             },
+
             {
                 "role": "user",
-                "content": prompt
+
+                "content":
+                    prompt
             }
+
         ],
+
         temperature=0.2
     )
 
 
+    # ========================================================
+    # GET GENERATED BRIEF
+    # ========================================================
+
     brief = response.choices[0].message.content
 
 
-    # --------------------------------------------------
-    # Return result
-    # --------------------------------------------------
+    # ========================================================
+    # RETURN EVERYTHING TO app.py
+    #
+    # IMPORTANT:
+    # "memories" contains the actual Hindsight memories.
+    # app.py can send these to brief.html.
+    # ========================================================
 
     return {
-        "success": True,
-        "person_name": person_name,
-        "memory_count": len(memories),
-        "brief": brief
+
+        "success":
+            True,
+
+        "person_name":
+            person_name,
+
+        "memory_count":
+            len(memories),
+
+        "memories":
+            memories,
+
+        "brief":
+            brief
+
     }
 
 
-# --------------------------------------------------
+# ============================================================
 # TEST
-# --------------------------------------------------
+# ============================================================
 
 if __name__ == "__main__":
 
     result = generate_meeting_brief(
+
         person_name="Rahul Kumar",
+
         company="ABC Technologies",
+
         role="Product Manager",
-        meeting_goal="Discuss the revised deployment architecture."
+
+        meeting_goal=
+            "Discuss the revised deployment architecture."
+
     )
 
-    print("\n======================================")
-    print("MEETING PREP BRIEF")
-    print("======================================")
 
-    print(result)
+    print(
+        "\n======================================"
+    )
+
+    print(
+        "MEETING PREP BRIEF"
+    )
+
+    print(
+        "======================================"
+    )
+
+    print(
+        result
+    )
