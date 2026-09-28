@@ -295,12 +295,6 @@
     </div>
 
 
-    <!--
-        IMPORTANT:
-        JavaScript will dynamically create
-        the memory cards here.
-    -->
-
     <div
         class="memory-grid"
         id="memoryGrid">
@@ -350,6 +344,28 @@
 
 
 /* ============================================================
+   CHECK LOGIN
+============================================================ */
+
+const userEmail =
+    localStorage.getItem("userEmail");
+
+
+if (!userEmail) {
+
+    alert(
+        "Please login before viewing a meeting."
+    );
+
+    window.location.replace(
+        "login.html"
+    );
+
+}
+
+
+
+/* ============================================================
    GET MEETING ID FROM URL
 ============================================================ */
 
@@ -396,10 +412,12 @@ async function loadMeeting() {
         ---------------------------------------------------- */
 
         const response =
-            await fetch(
-                "/api/meetings/"
-                + encodeURIComponent(meetingId)
-            );
+    await fetch(
+        "/api/meetings/"
+        + encodeURIComponent(meetingId)
+        + "?user_email="
+        + encodeURIComponent(userEmail)
+    );
 
 
 
@@ -454,7 +472,6 @@ async function loadMeeting() {
            BASIC MEETING INFORMATION
         ==================================================== */
 
-
         document.getElementById(
             "personName"
         ).textContent =
@@ -486,10 +503,6 @@ async function loadMeeting() {
 
         /* ====================================================
            MEETING TIME
-
-           IMPORTANT:
-           Use meeting.meeting_time
-           instead of meeting.meeting_date.
         ==================================================== */
 
         document.getElementById(
@@ -514,9 +527,6 @@ async function loadMeeting() {
 
         /* ====================================================
            MEETING GOAL
-
-           If meeting_goal exists, display it.
-           Otherwise use purpose as fallback.
         ==================================================== */
 
         document.getElementById(
@@ -592,10 +602,6 @@ function displayMemories(memories) {
         );
 
 
-    /* --------------------------------------------------------
-       CHECK MEMORY GRID
-    -------------------------------------------------------- */
-
     if (!memoryGrid) {
 
         return;
@@ -604,23 +610,14 @@ function displayMemories(memories) {
 
 
 
-    /* --------------------------------------------------------
-       CLEAR EXISTING MEMORY CARDS
-    -------------------------------------------------------- */
-
     memoryGrid.innerHTML = "";
 
 
-
-    /* --------------------------------------------------------
-       NO MEMORIES
-    -------------------------------------------------------- */
 
     if (
         !memories ||
         memories.length === 0
     ) {
-
 
         memoryGrid.innerHTML = `
 
@@ -646,17 +643,9 @@ function displayMemories(memories) {
 
 
 
-    /* --------------------------------------------------------
-       CREATE A CARD FOR EACH MEMORY
-    -------------------------------------------------------- */
-
     memories.forEach(
         function(memory) {
 
-
-            /* -----------------------------------------------
-               CREATE MEMORY CARD
-            ----------------------------------------------- */
 
             const card =
                 document.createElement(
@@ -667,11 +656,6 @@ function displayMemories(memories) {
             card.className =
                 "memory";
 
-
-
-            /* -----------------------------------------------
-               MEMORY TYPE
-            ----------------------------------------------- */
 
             const title =
                 document.createElement(
@@ -684,11 +668,6 @@ function displayMemories(memories) {
                 "Memory";
 
 
-
-            /* -----------------------------------------------
-               MEMORY TEXT
-            ----------------------------------------------- */
-
             const text =
                 document.createElement(
                     "p"
@@ -700,11 +679,6 @@ function displayMemories(memories) {
                 "";
 
 
-
-            /* -----------------------------------------------
-               ADD CONTENT TO CARD
-            ----------------------------------------------- */
-
             card.appendChild(
                 title
             );
@@ -714,11 +688,6 @@ function displayMemories(memories) {
                 text
             );
 
-
-
-            /* -----------------------------------------------
-               ADD CARD TO GRID
-            ----------------------------------------------- */
 
             memoryGrid.appendChild(
                 card
@@ -749,14 +718,8 @@ function displayAIBrief(brief) {
         null;
 
 
-
-    /* --------------------------------------------------------
-       FIND "Suggested talking points" SECTION
-    -------------------------------------------------------- */
-
     sectionTitles.forEach(
         function(section) {
-
 
             if (
                 section.textContent.trim()
@@ -773,11 +736,6 @@ function displayAIBrief(brief) {
     );
 
 
-
-    /* --------------------------------------------------------
-       IF SECTION DOES NOT EXIST
-    -------------------------------------------------------- */
-
     if (!targetSection) {
 
         return;
@@ -785,14 +743,8 @@ function displayAIBrief(brief) {
     }
 
 
-
-    /* --------------------------------------------------------
-       GET AI CARD
-    -------------------------------------------------------- */
-
     const aiCard =
         targetSection.nextElementSibling;
-
 
 
     if (!aiCard) {
@@ -802,18 +754,8 @@ function displayAIBrief(brief) {
     }
 
 
-
-    /* --------------------------------------------------------
-       CLEAR LOADING MESSAGE
-    -------------------------------------------------------- */
-
     aiCard.innerHTML = "";
 
-
-
-    /* --------------------------------------------------------
-       CREATE AI TEXT
-    -------------------------------------------------------- */
 
     const pre =
         document.createElement(
@@ -837,11 +779,6 @@ function displayAIBrief(brief) {
         brief ||
         "No AI preparation available.";
 
-
-
-    /* --------------------------------------------------------
-       ADD AI BRIEF TO CARD
-    -------------------------------------------------------- */
 
     aiCard.appendChild(
         pre
@@ -911,8 +848,6 @@ function formatTime(value) {
        HTML time input normally gives:
 
        10:30
-
-       So first handle a simple HH:MM value.
     */
 
     if (
@@ -957,11 +892,6 @@ function formatTime(value) {
 
 
 
-    /*
-       Otherwise try to parse
-       a complete date/time value.
-    */
-
     const date =
         new Date(value);
 
@@ -993,7 +923,9 @@ function formatTime(value) {
    START
 ============================================================ */
 
-loadMeeting();
+if (userEmail) {
+    loadMeeting();
+}
 
 </script>
 
